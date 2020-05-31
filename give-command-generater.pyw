@@ -29,7 +29,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成器 - Ver 1.5.0.2")
+        self.__init_window.title("指令生成器 - Ver 1.5.0.3")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -341,8 +341,9 @@ class GUI():
         self.__itemList.delete(select)
         del self.__items[selected]
         self.__refreshList()
-        self.__reset()
+        self.__reset_window()
         self.__clear_show_data()
+        self.__Label_statusText['text'] = '{0} 选择的物品已删除'.format(self.__getTime())
 
     def __load_from_list(self):
         select = self.__selectItem()
@@ -373,7 +374,7 @@ class GUI():
         self.__setText(self.__generate())
         self.__Label_statusText['text'] = '{0} 已复制到剪切板'.format(self.__getTime())
 
-    def __reset(self):
+    def __reset_window(self):
         self.__StringVar_name.set('')
         self.__StringVar_id.set('')
         self.__StringVar_lore.set('')
@@ -393,6 +394,12 @@ class GUI():
         self.__IntVar_POTION_EFFECTS.set(0)
         self.__IntVar_UNBREAKABLE.set(0)
 
+    def __reset(self):
+        self.__reset_window()
+        self.__clear_show_data()
+        self.__Label_statusText['text'] = '{0} 面板已重置'.format(self.__getTime())
+
+
     def __handle_number(self, string):
         number = re.search(r"[\d|.-]+", string)
         if re.search(r'%', string) == None:
@@ -407,7 +414,7 @@ class GUI():
     def __clear_all(self):
         self.__items = []
         self.__refreshList()
-        self.__reset()
+        self.__reset_window()
         self.__clear_show_data()
         self.__Label_statusText['text'] = '{0} 列表已清空'.format(self.__getTime())
 
@@ -434,9 +441,11 @@ class GUI():
         for i in range(len(self.__datas)):
             self.__Text_showData.insert('insert', self.__datas[i])
             self.__Text_showData.insert('insert', '\n\n')
-        self.__reset()
+        self.__reset_window()
         if len(self.__datas) != 0:
             self.__Label_statusText['text'] = '{0} 生成完成'.format(self.__getTime())
+        else:
+            self.__Label_statusText['text'] = '{0} 列表为空'.format(self.__getTime())
 
     def __output_all_yaml(self):
         for i in self.__items:
