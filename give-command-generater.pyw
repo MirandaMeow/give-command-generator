@@ -27,7 +27,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成器 - ver 1.4.0.5")
+        self.__init_window.title("指令生成器 - ver 1.4.0.7")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -44,15 +44,15 @@ class GUI():
         self.__Menu_menu.add_cascade(label="关于", command=self.__about)
         self.__init_window.config(menu=self.__Menu_menu)
 
-        self.__itemList = ttk.Treeview(self.__init_window, columns=["序号", "物品名称"], show='headings', selectmode="browse")
+        self.__itemList = ttk.Treeview(self.__init_window, columns=["序号", "物品名称"], show='headings', selectmode="browse", height=12)
         self.__Scrollbar_itemList = ttk.Scrollbar(self.__itemList, orient="vertical", command=self.__itemList.yview)
         self.__Scrollbar_itemList.place(relx=0.925, rely=0.02, relwidth=0.07, relheight=0.97)
         self.__itemList.configure(yscrollcommand=self.__Scrollbar_itemList.set)
         self.__itemList.column("序号", width=50)
-        self.__itemList.column("物品名称", width=200)
+        self.__itemList.column("物品名称", width=180)
         self.__itemList.heading("序号", text="序号")
         self.__itemList.heading("物品名称", text="物品名称")
-        self.__itemList.place(x=330, y=20)
+        self.__itemList.place(x=350, y=20)
 
         self.__Label_name = Label(self.__init_window, text='名称：')
         self.__Label_name.place(x=20, y=20)
@@ -138,16 +138,16 @@ class GUI():
         self.__Entry_knockbackResistance = Entry(self.__init_window, textvariable=self.__StringVar_knockbackResistance)
         self.__Entry_knockbackResistance.place(x=220, y=260, width=40)
 
-        self.__Button_save = Button(self.__init_window, text="-->", command=self.__save_to_list)
+        self.__Button_save = Button(self.__init_window, text="-->", command=self.__save_to_list, width=6)
         self.__Button_save.place(x=280, y=70)
 
-        self.__Button_load = Button(self.__init_window, text="<--",command=self.__load_from_list)
+        self.__Button_load = Button(self.__init_window, text="<--",command=self.__load_from_list, width=6)
         self.__Button_load.place(x=280, y=130)
 
-        self.__Button_delete = Button(self.__init_window, text="删除",command=self.__delete_Select, width=3)
+        self.__Button_delete = Button(self.__init_window, text="删除",command=self.__delete_Select, width=6)
         self.__Button_delete.place(x=280, y=190)
 
-        self.__Button_reset = Button(self.__init_window, text="重置", command=self.__reset, width=3)
+        self.__Button_reset = Button(self.__init_window, text="重置", command=self.__reset, width=6)
         self.__Button_reset.place(x=280, y=250)
 
         self.__Text_showData = Text(self.__init_window, height=10, width=77)
@@ -388,7 +388,7 @@ class GUI():
         self.__refreshList()
         self.__reset()
         self.__clear_show_data()
-        self.__Label_statusText['text'] = '已经清空列表'
+        self.__Label_statusText['text'] = '清空已列表'
 
     def __output_all(self):
         self.__clear_show_data()
