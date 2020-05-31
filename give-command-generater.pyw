@@ -1,7 +1,6 @@
 import random
 from tkinter import *
-from tkinter import ttk
-from tkinter import filedialog, dialog
+from tkinter import ttk, filedialog, dialog, messagebox
 import re
 import os
 import winreg
@@ -28,9 +27,9 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成器     - ver 1.4.0.2")
+        self.__init_window.title("指令生成器 - ver 1.4.0.2")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
-        self.__init_window.geometry('610x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
+        self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
         # self.__init_window.attributes("-alpha",0.9) 半透明
         self.__Menu_menu = Menu(self.__init_window)
@@ -42,6 +41,7 @@ class GUI():
         self.__Menu_menu.add_cascade(label="文件", menu=self.__Menu_subMenu)
         self.__Menu_menu.add_cascade(label="清空列表", command=self.__clear_all)
         self.__Menu_menu.add_cascade(label="从列表生成", command=self.__output_all)
+        self.__Menu_menu.add_cascade(label="关于", command=self.__about)
         self.__init_window.config(menu=self.__Menu_menu)
 
         self.__itemList = ttk.Treeview(self.__init_window, columns=["序号", "物品名称"], show='headings', selectmode="browse")
@@ -185,6 +185,12 @@ class GUI():
         self.__CheckButton_UNBREAKABLE = Checkbutton(self.__init_window, text='UNBREAKABLE', variable=self.__IntVar_UNBREAKABLE)
         self.__CheckButton_UNBREAKABLE.place(x=280, y=320)
 
+        self.__Label_statusText = Label(self.__init_window, text='程序初始化完成')
+        self.__Label_statusText.place(x=20, y=490)
+
+    def __about(self):
+        messagebox.showinfo("关于", "开发者：Miranda")
+
     def __get_desktop(self):
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders',)
         return winreg.QueryValueEx(key, "Desktop")[0]
@@ -197,9 +203,10 @@ class GUI():
                 try:
                     self.__items += json.load(file)
                 except:
+                    self.__Label_statusText['text'] = '打开文件 {0} 时发生错误'.format(file_path)
                     return
-                finally:
-                    self.__refreshList()
+                self.__Label_statusText['text'] = '成功打开文件 {0}'.format(file_path)
+                self.__refreshList()
 
     def __open_file_excel(self):
         desktop = self.__get_desktop()
@@ -208,6 +215,7 @@ class GUI():
             table = xlrd.open_workbook(file_path)
             sheet = table.sheets()[0]
         except:
+            self.__Label_statusText['text'] = '打开文件 {0} 时发生错误'.format(file_path)
             return
         for i in range(sheet.nrows):
             if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
@@ -237,6 +245,7 @@ class GUI():
             temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
             self.__items.append(temp)
             self.__refreshList()
+            self.__Label_statusText['text'] = '成功导入文件 {0}'.format(file_path)
 
     def __zero_conv(self, string):
         if string == '':
@@ -249,6 +258,7 @@ class GUI():
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 json.dump(self.__items, file)
+            self.__Label_statusText['text'] = '保存成功'
 
     def __save_file_yaml(self):
         self.__output_all_yaml()
@@ -256,6 +266,7 @@ class GUI():
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 yaml.safe_dump(self.__yamls, file, default_flow_style=False,encoding='utf-8',allow_unicode=True)
+            self.__Label_statusText['text'] = '导出成功'
 
     def __selectItem(self):
         if len(self.__itemList.selection()) != 0:
@@ -360,7 +371,6 @@ class GUI():
         self.__IntVar_PLACED_ON.set(0)
         self.__IntVar_POTION_EFFECTS.set(0)
         self.__IntVar_UNBREAKABLE.set(0)
-        self.__clear_show_data()
 
     def __handle_number(self, string):
         number = re.search(r"[\d|.-]+", string)
@@ -378,6 +388,7 @@ class GUI():
         self.__refreshList()
         self.__reset()
         self.__clear_show_data()
+        self.__Label_statusText['text'] = '已经清空列表'
 
     def __output_all(self):
         self.__clear_show_data()
@@ -403,6 +414,8 @@ class GUI():
             self.__Text_showData.insert('insert', self.__datas[i])
             self.__Text_showData.insert('insert', '\n\n')
         self.__reset()
+        if len(self.__datas) != 0:
+            self.__Label_statusText['text'] = '生成完成'
 
     def __output_all_yaml(self):
         for i in self.__items:
