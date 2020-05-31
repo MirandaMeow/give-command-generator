@@ -29,7 +29,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成器 - Ver 1.5.0.5")
+        self.__init_window.title("指令生成器 - Ver 1.5.0.6")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -191,7 +191,7 @@ class GUI():
         self.__Label_statusText.place(x=20, y=490)
 
     def __about(self):
-        messagebox.showinfo("关于", "开发者：Miranda")
+        messagebox.showinfo("关于", "开发者：MirandaMeow")
 
     def __get_desktop(self):
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders',)
