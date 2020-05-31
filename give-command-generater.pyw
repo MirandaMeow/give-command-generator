@@ -29,7 +29,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成器 - Ver 1.5.0.3")
+        self.__init_window.title("指令生成器 - Ver 1.5.0.4")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -341,7 +341,6 @@ class GUI():
         self.__itemList.delete(select)
         del self.__items[selected]
         self.__refreshList()
-        self.__reset_window()
         self.__clear_show_data()
         self.__Label_statusText['text'] = '{0} 选择的物品已删除'.format(self.__getTime())
 
@@ -453,9 +452,9 @@ class GUI():
             self.__yamls[temp['Name']] = {}
             currentItem = self.__yamls[temp['Name']]
             if temp['id'] == '':
-                currentItem['id'] = 0
+                currentItem['Id'] = 0
             else:
-                currentItem['id'] = int(temp['id'])
+                currentItem['Id'] = int(temp['id'])
             currentItem['Data'] = 0
             currentItem['Display'] = temp['Name']
             currentItem['Lore'] = [temp['lore']]
