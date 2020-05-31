@@ -29,20 +29,24 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成器 - Ver 1.5.0.1")
+        self.__init_window.title("指令生成器 - Ver 1.5.0.2")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
         # self.__init_window.attributes("-alpha",0.9) 半透明
         self.__Menu_menu = Menu(self.__init_window)
-        self.__Menu_subMenu = Menu(self.__init_window, tearoff=False)
-        self.__Menu_subMenu.add_command(label="打开", command=self.__open_file)
-        self.__Menu_subMenu.add_command(label="保存", command=self.__save_file)
-        self.__Menu_subMenu.add_command(label="导入 Excel", command=self.__open_file_excel)
-        self.__Menu_subMenu.add_command(label="导出 YAML", command=self.__save_file_yaml)
-        self.__Menu_menu.add_cascade(label="文件", menu=self.__Menu_subMenu)
-        self.__Menu_menu.add_cascade(label="清空列表", command=self.__clear_all)
-        self.__Menu_menu.add_cascade(label="从列表生成", command=self.__output_all)
+        self.__Menu_subMenu_file = Menu(self.__init_window, tearoff=False)
+        self.__Menu_subMenu_file.add_command(label="打开", command=self.__open_file)
+        self.__Menu_subMenu_file.add_command(label="保存", command=self.__save_file)
+        self.__Menu_subMenu_file.add_command(label="导入 Excel", command=self.__open_file_excel)
+        self.__Menu_subMenu_file.add_command(label="导出 YAML", command=self.__save_file_yaml)
+
+        self.__Menu_subMenu_list = Menu(self.__init_window, tearoff=False)
+        self.__Menu_subMenu_list.add_command(label="从列表生成", command=self.__output_all)
+        self.__Menu_subMenu_list.add_command(label="清空列表", command=self.__clear_all)
+
+        self.__Menu_menu.add_cascade(label="文件", menu=self.__Menu_subMenu_file)
+        self.__Menu_menu.add_cascade(label="列表", menu=self.__Menu_subMenu_list)
         self.__Menu_menu.add_cascade(label="关于", command=self.__about)
         self.__init_window.config(menu=self.__Menu_menu)
 
