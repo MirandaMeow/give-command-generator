@@ -29,7 +29,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成器 - Ver 1.5.0.4")
+        self.__init_window.title("指令生成器 - Ver 1.5.0.5")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -161,11 +161,7 @@ class GUI():
         self.__Scrollbar_showData.place(x=565, y=350,relheight=0.27)
         self.__Text_showData.config(yscrollcommand=self.__Scrollbar_showData.set)
         self.__Text_showData.place(x=20, y=350)
-
         self.__Scrollbar_showData.config(command=self.__Text_showData.yview)
-
-        # self.__Label_check = Label(self.__init_window, text='MM 隐藏项目：')
-        # self.__Label_check.place(x=20, y=300)
 
         self.__IntVar_ATTRIBUTES = IntVar(value=0)
         self.__CheckButton_ATTRIBUTES = Checkbutton(self.__init_window, text='ATTRIBUTES', variable=self.__IntVar_ATTRIBUTES)
@@ -306,6 +302,7 @@ class GUI():
 
     def __save_to_list(self):
         if self.__StringVar_name.get() == '':
+            self.__Label_statusText['text'] = '{0} 必须填写物品名称'.format(self.__getTime())
             return
         temp = {}
         temp['Name'] = self.__StringVar_name.get()
@@ -336,6 +333,7 @@ class GUI():
     def __delete_Select(self):
         select = self.__itemList.focus()
         if select == '' or None:
+            self.__Label_statusText['text'] = '{0} 没有选择物品'.format(self.__getTime())
             return
         selected = self.__selectItem() - 1
         self.__itemList.delete(select)
@@ -347,10 +345,9 @@ class GUI():
     def __load_from_list(self):
         select = self.__selectItem()
         if select == None:
+            self.__Label_statusText['text'] = '{0} 没有选择物品'.format(self.__getTime())
             return
         selected = self.__selectItem() - 1
-        if selected == '':
-            return
         temp = self.__items[selected]
         self.__StringVar_name.set(temp['Name'])
         self.__StringVar_id.set(temp['id'])
@@ -413,8 +410,6 @@ class GUI():
     def __clear_all(self):
         self.__items = []
         self.__refreshList()
-        self.__reset_window()
-        self.__clear_show_data()
         self.__Label_statusText['text'] = '{0} 列表已清空'.format(self.__getTime())
 
     def __output_all(self):
