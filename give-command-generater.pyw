@@ -7,6 +7,8 @@ import winreg
 import yaml
 import json
 import xlrd
+import win32clipboard
+import time
 
 class GUI():
     def __init__(self):
@@ -185,7 +187,7 @@ class GUI():
         self.__CheckButton_UNBREAKABLE = Checkbutton(self.__init_window, text='UNBREAKABLE', variable=self.__IntVar_UNBREAKABLE)
         self.__CheckButton_UNBREAKABLE.place(x=280, y=320)
 
-        self.__Label_statusText = Label(self.__init_window, text='程序初始化完成')
+        self.__Label_statusText = Label(self.__init_window, text='{0} 程序初始化完成'.format(self.__getTime()))
         self.__Label_statusText.place(x=20, y=490)
 
     def __about(self):
@@ -203,9 +205,9 @@ class GUI():
                 try:
                     self.__items += json.load(file)
                 except:
-                    self.__Label_statusText['text'] = '打开文件 {0} 时发生错误'.format(file_path)
+                    self.__Label_statusText['text'] = '{0} 打开文件 {1} 时发生错误'.format(self.__getTime(), file_path)
                     return
-                self.__Label_statusText['text'] = '成功打开文件 {0}'.format(file_path)
+                self.__Label_statusText['text'] = '{0} 成功打开文件 {1}'.format(self.__getTime(), file_path)
                 self.__refreshList()
 
     def __open_file_excel(self):
@@ -215,7 +217,7 @@ class GUI():
             table = xlrd.open_workbook(file_path)
             sheet = table.sheets()[0]
         except:
-            self.__Label_statusText['text'] = '打开文件 {0} 时发生错误'.format(file_path)
+            self.__Label_statusText['text'] = '{0} 打开文件 {1} 时发生错误'.format(self.__getTime(), file_path)
             return
         for i in range(sheet.nrows):
             if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
@@ -245,7 +247,7 @@ class GUI():
             temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
             self.__items.append(temp)
             self.__refreshList()
-            self.__Label_statusText['text'] = '成功导入文件 {0}'.format(file_path)
+            self.__Label_statusText['text'] = '{0} 成功导入文件 {1}'.format(self.__getTime(), file_path)
 
     def __zero_conv(self, string):
         if string == '':
@@ -253,12 +255,24 @@ class GUI():
         else:
             return int(string)
 
+    def __getTime(self):
+        timeStamp = time.time()
+        timeArray = time.localtime(timeStamp)
+        formatTime = "[" + time.strftime("%H:%M:%S", timeArray) + "]"
+        return formatTime
+
+    def __setText(self, text): 
+        win32clipboard.OpenClipboard()  
+        win32clipboard.EmptyClipboard()  
+        win32clipboard.SetClipboardText(text)  
+        win32clipboard.CloseClipboard()
+
     def __save_file(self):
         file_path = filedialog.asksaveasfilename(title=u'保存文件')
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 json.dump(self.__items, file)
-            self.__Label_statusText['text'] = '保存成功'
+            self.__Label_statusText['text'] = '{0} 保存成功'.format(self.__getTime())
 
     def __save_file_yaml(self):
         self.__output_all_yaml()
@@ -266,7 +280,7 @@ class GUI():
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 yaml.safe_dump(self.__yamls, file, default_flow_style=False,encoding='utf-8',allow_unicode=True)
-            self.__Label_statusText['text'] = '导出成功'
+            self.__Label_statusText['text'] = '{0} 导出成功'.format(self.__getTime())
 
     def __selectItem(self):
         if len(self.__itemList.selection()) != 0:
@@ -311,7 +325,9 @@ class GUI():
         temp['hides']['UNBREAKABLE'] = self.__IntVar_UNBREAKABLE.get()
         self.__items.append(temp)
         self.__refreshList()
-        self.__generate()
+        self.__setText(self.__generate())
+        self.__Label_statusText['text'] = '{0} 已复制到剪切板'.format(self.__getTime())
+
 
     def __delete_Select(self):
         select = self.__itemList.focus()
@@ -350,7 +366,8 @@ class GUI():
         self.__IntVar_PLACED_ON.set(temp['hides']['PLACED_ON'])
         self.__IntVar_POTION_EFFECTS.set(temp['hides']['POTION_EFFECTS'])
         self.__IntVar_UNBREAKABLE.set(temp['hides']['UNBREAKABLE'])
-        self.__generate()
+        self.__setText(self.__generate())
+        self.__Label_statusText['text'] = '{0} 已复制到剪切板'.format(self.__getTime())
 
     def __reset(self):
         self.__StringVar_name.set('')
@@ -388,7 +405,7 @@ class GUI():
         self.__refreshList()
         self.__reset()
         self.__clear_show_data()
-        self.__Label_statusText['text'] = '清空已列表'
+        self.__Label_statusText['text'] = '{0} 列表已清空'.format(self.__getTime())
 
     def __output_all(self):
         self.__clear_show_data()
@@ -415,7 +432,7 @@ class GUI():
             self.__Text_showData.insert('insert', '\n\n')
         self.__reset()
         if len(self.__datas) != 0:
-            self.__Label_statusText['text'] = '生成完成'
+            self.__Label_statusText['text'] = '{0} 生成完成'.format(self.__getTime())
 
     def __output_all_yaml(self):
         for i in self.__items:
