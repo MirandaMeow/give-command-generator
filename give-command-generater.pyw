@@ -29,7 +29,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.5.0.6")
+        self.__init_window.title("指令生成转换器 - Ver 1.5.0.7")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -327,7 +327,7 @@ class GUI():
         self.__items.append(temp)
         self.__refreshList()
         self.__setText(self.__generate())
-        self.__Label_statusText['text'] = '{0} 已复制到剪切板'.format(self.__getTime())
+        self.__Label_statusText['text'] = '{0} 物品信息已保存至列表，指令已复制到剪切板'.format(self.__getTime())
 
 
     def __delete_Select(self):
@@ -368,7 +368,7 @@ class GUI():
         self.__IntVar_POTION_EFFECTS.set(temp['hides']['POTION_EFFECTS'])
         self.__IntVar_UNBREAKABLE.set(temp['hides']['UNBREAKABLE'])
         self.__setText(self.__generate())
-        self.__Label_statusText['text'] = '{0} 已复制到剪切板'.format(self.__getTime())
+        self.__Label_statusText['text'] = '{0} 已从列表载入物品信息，指令已复制到剪切板'.format(self.__getTime())
 
     def __reset_window(self):
         self.__StringVar_name.set('')
