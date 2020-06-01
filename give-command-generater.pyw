@@ -10,6 +10,7 @@ import xlrd
 import win32clipboard
 import time
 
+
 class GUI():
     def __init__(self):
         self.__slot_list = {
@@ -33,7 +34,7 @@ class GUI():
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
-        # self.__init_window.attributes("-alpha",0.9) 半透明
+        # self.__init_window.attributes("-alpha", 0.6)
         self.__Menu_menu = Menu(self.__init_window)
         self.__Menu_subMenu_file = Menu(self.__init_window, tearoff=False)
         self.__Menu_subMenu_file.add_command(label="打开", command=self.__open_file)
@@ -50,7 +51,8 @@ class GUI():
         self.__Menu_menu.add_cascade(label="关于", command=self.__about)
         self.__init_window.config(menu=self.__Menu_menu)
 
-        self.__itemList = ttk.Treeview(self.__init_window, columns=["序号", "物品名称"], show='headings', selectmode="browse", height=12)
+        self.__itemList = ttk.Treeview(self.__init_window, columns=[
+                                       "序号", "物品名称"], show='headings', selectmode="browse", height=12)
         self.__Scrollbar_itemList = ttk.Scrollbar(self.__itemList, orient="vertical", command=self.__itemList.yview)
         self.__Scrollbar_itemList.place(relx=0.925, rely=0.02, relwidth=0.07, relheight=0.97)
         self.__itemList.configure(yscrollcommand=self.__Scrollbar_itemList.set)
@@ -147,10 +149,10 @@ class GUI():
         self.__Button_save = Button(self.__init_window, text="-->", command=self.__save_to_list, width=6)
         self.__Button_save.place(x=280, y=70)
 
-        self.__Button_load = Button(self.__init_window, text="<--",command=self.__load_from_list, width=6)
+        self.__Button_load = Button(self.__init_window, text="<--", command=self.__load_from_list, width=6)
         self.__Button_load.place(x=280, y=130)
 
-        self.__Button_delete = Button(self.__init_window, text="删除",command=self.__delete_Select, width=6)
+        self.__Button_delete = Button(self.__init_window, text="删除", command=self.__delete_Select, width=6)
         self.__Button_delete.place(x=280, y=190)
 
         self.__Button_reset = Button(self.__init_window, text="重置", command=self.__reset, width=6)
@@ -158,7 +160,7 @@ class GUI():
 
         self.__Text_showData = Text(self.__init_window, height=10, width=77)
         self.__Scrollbar_showData = Scrollbar(self.__init_window)
-        self.__Scrollbar_showData.place(x=565, y=350,relheight=0.27)
+        self.__Scrollbar_showData.place(x=565, y=350, relheight=0.27)
         self.__Text_showData.config(yscrollcommand=self.__Scrollbar_showData.set)
         self.__Text_showData.place(x=20, y=350)
         self.__Scrollbar_showData.config(command=self.__Text_showData.yview)
@@ -180,7 +182,8 @@ class GUI():
         self.__CheckButton_PLACED_ON.place(x=20, y=320)
 
         self.__IntVar_POTION_EFFECTS = IntVar(value=0)
-        self.__CheckButton_POTION_EFFECTS = Checkbutton(self.__init_window, text='POTION_EFFECTS', variable=self.__IntVar_POTION_EFFECTS)
+        self.__CheckButton_POTION_EFFECTS = Checkbutton(
+            self.__init_window, text='POTION_EFFECTS', variable=self.__IntVar_POTION_EFFECTS)
         self.__CheckButton_POTION_EFFECTS.place(x=150, y=320)
 
         self.__IntVar_UNBREAKABLE = IntVar(value=0)
@@ -261,10 +264,10 @@ class GUI():
         formatTime = "[" + time.strftime("%H:%M:%S", timeArray) + "]"
         return formatTime
 
-    def __setText(self, text): 
-        win32clipboard.OpenClipboard()  
-        win32clipboard.EmptyClipboard()  
-        win32clipboard.SetClipboardText(text)  
+    def __setText(self, text):
+        win32clipboard.OpenClipboard()
+        win32clipboard.EmptyClipboard()
+        win32clipboard.SetClipboardText(text)
         win32clipboard.CloseClipboard()
 
     def __save_file(self):
@@ -279,7 +282,7 @@ class GUI():
         file_path = filedialog.asksaveasfilename(title=u'保存文件')
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
-                yaml.safe_dump(self.__yamls, file, default_flow_style=False,encoding='utf-8',allow_unicode=True)
+                yaml.safe_dump(self.__yamls, file, default_flow_style=False, encoding='utf-8', allow_unicode=True)
             self.__Label_statusText['text'] = '{0} 导出成功'.format(self.__getTime())
 
     def __selectItem(self):
@@ -298,7 +301,7 @@ class GUI():
         self.__clearList()
         count = 0
         for i in range(len(self.__items)):
-            self.__itemList.insert('', END, value=[i + 1 ,self.__items[i]['Name']])
+            self.__itemList.insert('', END, value=[i + 1, self.__items[i]['Name']])
 
     def __save_to_list(self):
         if self.__StringVar_name.get() == '':
@@ -329,7 +332,6 @@ class GUI():
         self.__setText(self.__generate())
         self.__Label_statusText['text'] = '{0} 物品信息已保存至列表，指令已复制到剪切板'.format(self.__getTime())
 
-
     def __delete_Select(self):
         select = self.__itemList.focus()
         if select == '' or None:
@@ -359,7 +361,7 @@ class GUI():
         self.__StringVar_movementSpeed.set(temp['movementSpeed'])
         self.__StringVar_armorToughness.set(temp['armorToughness'])
         self.__StringVar_knockbackResistance.set(temp['knockbackResistance'])
-        self.__StringVar_part.set(temp['part'] )
+        self.__StringVar_part.set(temp['part'])
         self.__StringVar_unbreakable.set(temp['unbreakable'])
         self.__IntVar_ATTRIBUTES.set(temp['hides']['ATTRIBUTES'])
         self.__IntVar_ENCHANTS.set(temp['hides']['ENCHANTS'])
@@ -394,7 +396,6 @@ class GUI():
         self.__reset_window()
         self.__clear_show_data()
         self.__Label_statusText['text'] = '{0} 面板已重置'.format(self.__getTime())
-
 
     def __handle_number(self, string):
         number = re.search(r"[\d|.-]+", string)
