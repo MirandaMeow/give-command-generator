@@ -25,12 +25,12 @@ class GUI():
         self.__datas = []
         self.__yamls = {}
         self.__init_window = Tk()
-        self.__dict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': []}
+        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': []}
         self.__set_init_window()
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.5.0.7")
+        self.__init_window.title("指令生成转换器 - Ver 1.6.0.2")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -87,8 +87,10 @@ class GUI():
         self.__Label_part.place(x=20, y=100)
         self.__StringVar_part = StringVar()
         self.__StringVar_part.set("头盔")
-        self.__OptionMenu_part = OptionMenu(self.__init_window, self.__StringVar_part, "头盔", "胸甲", "腿甲", "靴子", "主手", "副手")
-        self.__OptionMenu_part.place(x=70, y=90)
+        self.__Combobox_part = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_part, width=4)
+        self.__Combobox_part['value'] = ("头盔", "胸甲", "腿甲", "靴子", "主手", "副手")
+        self.__Combobox_part['state'] = 'readonly'
+        self.__Combobox_part.place(x=70, y=100)
 
         self.__Label_maxHealth = Label(self.__init_window, text='生命值：')
         self.__Label_maxHealth.place(x=20, y=140)
@@ -101,8 +103,10 @@ class GUI():
         self.__Label_unbreakable.place(x=145, y=140)
         self.__StringVar_unbreakable = StringVar()
         self.__StringVar_unbreakable.set("否")
-        self.__OptionMenu_unbreakable = OptionMenu(self.__init_window, self.__StringVar_unbreakable, "是", "否")
-        self.__OptionMenu_unbreakable.place(x=205, y=130)
+        self.__Combobox_unbreakable = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_unbreakable, width=2)
+        self.__Combobox_unbreakable['value'] = ("是", "否")
+        self.__Combobox_unbreakable['state'] = 'readonly'
+        self.__Combobox_unbreakable.place(x=223, y=140)
 
         self.__Label_attackDamage = Label(self.__init_window, text='伤害值：')
         self.__Label_attackDamage.place(x=20, y=180)
@@ -202,7 +206,7 @@ class GUI():
 
     def __open_file(self):
         desktop = self.__get_desktop()
-        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser(desktop)))
+        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser(desktop)), filetypes=[('数据文件', '*.json'), ('所有文件', '*')])
         if file_path is not '':
             with open(file=file_path, mode='r', encoding='utf-8') as file:
                 try:
@@ -215,42 +219,44 @@ class GUI():
 
     def __open_file_excel(self):
         desktop = self.__get_desktop()
-        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser(desktop)))
-        try:
-            table = xlrd.open_workbook(file_path)
-            sheet = table.sheets()[0]
-        except:
-            self.__Label_statusText['text'] = '{0} 打开文件 {1} 时发生错误'.format(self.__getTime(), file_path)
-            return
-        for i in range(sheet.nrows):
-            if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
-                continue
-            temp = {}
-            temp['Name'] = sheet.cell(i, 0).value
-            if sheet.cell(i, 1).value == '':
-                temp['id'] = 0
-            else:
-                temp['id'] = int(sheet.cell(i, 1).value)
-            temp['lore'] = sheet.cell(i, 2).value
-            temp['maxHealth'] = sheet.cell(i, 4).value
-            temp['attackDamage'] = sheet.cell(i, 6).value
-            temp['armor'] = sheet.cell(i, 7).value
-            temp['attackSpeed'] = sheet.cell(i, 8).value
-            temp['movementSpeed'] = sheet.cell(i, 9).value
-            temp['armorToughness'] = sheet.cell(i, 10).value
-            temp['knockbackResistance'] = sheet.cell(i, 11).value
-            temp['part'] = sheet.cell(i, 3).value
-            temp['unbreakable'] = sheet.cell(i, 5).value
-            temp['hides'] = {}
-            temp['hides']['ATTRIBUTES'] = self.__zero_conv(sheet.cell(i, 12).value)
-            temp['hides']['ENCHANTS'] = self.__zero_conv(sheet.cell(i, 13).value)
-            temp['hides']['DESTROYS'] = self.__zero_conv(sheet.cell(i, 14).value)
-            temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
-            temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
-            temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
-            self.__items.append(temp)
-            self.__refreshList()
-            self.__Label_statusText['text'] = '{0} 成功导入文件 {1}'.format(self.__getTime(), file_path)
+        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser(desktop)), filetypes=[('Excel 工作簿', '*.xlsx'), ('Excel 97-2003 工工作簿', '*.xls'), ('所有文件', '*')])
+        if file_path is not '':
+            try:
+                table = xlrd.open_workbook(file_path)
+                sheet = table.sheets()[0]
+            except:
+                self.__Label_statusText['text'] = '{0} 打开文件 {1} 时发生错误'.format(self.__getTime(), file_path)
+                return
+            for i in range(sheet.nrows):
+                if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
+                    continue
+                temp = {}
+                temp['Name'] = sheet.cell(i, 0).value
+                if sheet.cell(i, 1).value == '':
+                    temp['id'] = 0
+                else:
+                    temp['id'] = int(sheet.cell(i, 1).value)
+                temp['lore'] = sheet.cell(i, 2).value
+                temp['attributes'] = {}
+                temp['attributes']['maxHealth'] = sheet.cell(i, 4).value
+                temp['attributes']['attackDamage'] = sheet.cell(i, 6).value
+                temp['attributes']['armor'] = sheet.cell(i, 7).value
+                temp['attributes']['attackSpeed'] = sheet.cell(i, 8).value
+                temp['attributes']['movementSpeed'] = sheet.cell(i, 9).value
+                temp['attributes']['armorToughness'] = sheet.cell(i, 10).value
+                temp['attributes']['knockbackResistance'] = sheet.cell(i, 11).value
+                temp['part'] = sheet.cell(i, 3).value
+                temp['unbreakable'] = sheet.cell(i, 5).value
+                temp['hides'] = {}
+                temp['hides']['ATTRIBUTES'] = self.__zero_conv(sheet.cell(i, 12).value)
+                temp['hides']['ENCHANTS'] = self.__zero_conv(sheet.cell(i, 13).value)
+                temp['hides']['DESTROYS'] = self.__zero_conv(sheet.cell(i, 14).value)
+                temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
+                temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
+                temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
+                self.__items.append(temp)
+                self.__refreshList()
+                self.__Label_statusText['text'] = '{0} 成功导入文件 {1}'.format(self.__getTime(), file_path)
 
     def __zero_conv(self, string):
         if string == '':
@@ -271,15 +277,15 @@ class GUI():
         win32clipboard.CloseClipboard()
 
     def __save_file(self):
-        file_path = filedialog.asksaveasfilename(title=u'保存文件')
+        file_path = filedialog.asksaveasfilename(title=u'保存文件', filetypes=[('数据文件', '*.json')], defaultextension=".json")
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
-                json.dump(self.__items, file)
+                json.dump(self.__items, file, ensure_ascii=False)
             self.__Label_statusText['text'] = '{0} 保存成功'.format(self.__getTime())
 
     def __save_file_yaml(self):
         self.__output_all_yaml()
-        file_path = filedialog.asksaveasfilename(title=u'保存文件')
+        file_path = filedialog.asksaveasfilename(title=u'保存文件', filetypes=[('YAML 数据文件', '*.yml')   ], defaultextension=".yml")
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 yaml.safe_dump(self.__yamls, file, default_flow_style=False, encoding='utf-8', allow_unicode=True)
@@ -311,13 +317,14 @@ class GUI():
         temp['Name'] = self.__StringVar_name.get()
         temp['id'] = self.__StringVar_id.get()
         temp['lore'] = self.__StringVar_lore.get()
-        temp['maxHealth'] = self.__StringVar_maxHealth.get()
-        temp['attackDamage'] = self.__StringVar_attackDamage.get()
-        temp['armor'] = self.__StringVar_armor.get()
-        temp['attackSpeed'] = self.__StringVar_attackSpeed.get()
-        temp['movementSpeed'] = self.__StringVar_movementSpeed.get()
-        temp['armorToughness'] = self.__StringVar_armorToughness.get()
-        temp['knockbackResistance'] = self.__StringVar_knockbackResistance.get()
+        temp['attributes'] = {}
+        temp['attributes']['maxHealth'] = self.__StringVar_maxHealth.get()
+        temp['attributes']['attackDamage'] = self.__StringVar_attackDamage.get()
+        temp['attributes']['armor'] = self.__StringVar_armor.get()
+        temp['attributes']['attackSpeed'] = self.__StringVar_attackSpeed.get()
+        temp['attributes']['movementSpeed'] = self.__StringVar_movementSpeed.get()
+        temp['attributes']['armorToughness'] = self.__StringVar_armorToughness.get()
+        temp['attributes']['knockbackResistance'] = self.__StringVar_knockbackResistance.get()
         temp['part'] = self.__StringVar_part.get()
         temp['unbreakable'] = self.__StringVar_unbreakable.get()
         temp['hides'] = {}
@@ -354,13 +361,13 @@ class GUI():
         self.__StringVar_name.set(temp['Name'])
         self.__StringVar_id.set(temp['id'])
         self.__StringVar_lore.set(temp['lore'])
-        self.__StringVar_maxHealth.set(temp['maxHealth'])
-        self.__StringVar_attackDamage.set(temp['attackDamage'])
-        self.__StringVar_armor.set(temp['armor'])
-        self.__StringVar_attackSpeed.set(temp['attackSpeed'])
-        self.__StringVar_movementSpeed.set(temp['movementSpeed'])
-        self.__StringVar_armorToughness.set(temp['armorToughness'])
-        self.__StringVar_knockbackResistance.set(temp['knockbackResistance'])
+        self.__StringVar_maxHealth.set(temp['attributes']['maxHealth'])
+        self.__StringVar_attackDamage.set(temp['attributes']['attackDamage'])
+        self.__StringVar_armor.set(temp['attributes']['armor'])
+        self.__StringVar_attackSpeed.set(temp['attributes']['attackSpeed'])
+        self.__StringVar_movementSpeed.set(temp['attributes']['movementSpeed'])
+        self.__StringVar_armorToughness.set(temp['attributes']['armorToughness'])
+        self.__StringVar_knockbackResistance.set(temp['attributes']['knockbackResistance'])
         self.__StringVar_part.set(temp['part'])
         self.__StringVar_unbreakable.set(temp['unbreakable'])
         self.__IntVar_ATTRIBUTES.set(temp['hides']['ATTRIBUTES'])
@@ -421,13 +428,13 @@ class GUI():
             self.__StringVar_name.set(temp['Name'])
             self.__StringVar_id.set(temp['id'])
             self.__StringVar_lore.set(temp['lore'])
-            self.__StringVar_maxHealth.set(temp['maxHealth'])
-            self.__StringVar_attackDamage.set(temp['attackDamage'])
-            self.__StringVar_armor.set(temp['armor'])
-            self.__StringVar_attackSpeed.set(temp['attackSpeed'])
-            self.__StringVar_movementSpeed.set(temp['movementSpeed'])
-            self.__StringVar_armorToughness.set(temp['armorToughness'])
-            self.__StringVar_knockbackResistance.set(temp['knockbackResistance'])
+            self.__StringVar_maxHealth.set(temp['attributes']['maxHealth'])
+            self.__StringVar_attackDamage.set(temp['attributes']['attackDamage'])
+            self.__StringVar_armor.set(temp['attributes']['armor'])
+            self.__StringVar_attackSpeed.set(temp['attributes']['attackSpeed'])
+            self.__StringVar_movementSpeed.set(temp['attributes']['movementSpeed'])
+            self.__StringVar_armorToughness.set(temp['attributes']['armorToughness'])
+            self.__StringVar_knockbackResistance.set(temp['attributes']['knockbackResistance'])
             self.__StringVar_part.set(temp['part'])
             self.__StringVar_unbreakable.set(temp['unbreakable'])
             tempData = self.__generate()
@@ -467,10 +474,10 @@ class GUI():
             else:
                 currentItem['Unbreakable'] = False
             for i in ['maxHealth', 'attackDamage', 'armor', 'attackSpeed', 'movementSpeed', 'armorToughness', 'knockbackResistance']:
-                if temp[i] == '':
+                if temp['attributes'][i] == '':
                     continue
                 else:
-                    currentItem['Attributes'][self.__slot_list[temp['part']]][i] = float(self.__handle_number(str(temp[i])))
+                    currentItem['Attributes'][self.__slot_list[temp['part']]][i] = float(self.__handle_number(str(temp['attributes'][i])))
 
     def __random_Number(self, digit):
         numbers = '0123456789'
@@ -483,16 +490,16 @@ class GUI():
     def __handle_name(self):
         if self.__StringVar_name.get() == '':
             return
-        self.__dict['display']['Name'] = self.__StringVar_name.get()
+        self.__itemDict['display']['Name'] = self.__StringVar_name.get()
 
     def __handle_lore(self):
         if self.__StringVar_lore.get() == '':
             return
-        self.__dict['display']['Lore'] = [self.__StringVar_lore.get()]
+        self.__itemDict['display']['Lore'] = [self.__StringVar_lore.get()]
 
     def __handle_unbreakable(self):
         if self.__StringVar_unbreakable.get() == '是':
-            self.__dict['Unbreakable'] = 1
+            self.__itemDict['Unbreakable'] = 1
 
     def __handle_data(self, target, generic):
         if target == '':
@@ -517,10 +524,10 @@ class GUI():
         temp['UUIDLeast'] = int(self.__random_Number(3))
         temp['UUIDMost'] = int(self.__random_Number(3))
         temp['Slot'] = self.__slot_list[self.__StringVar_part.get()]
-        self.__dict['AttributeModifiers'].append(temp)
+        self.__itemDict['AttributeModifiers'].append(temp)
 
     def __generate(self):
-        self.__dict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': []}
+        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': []}
         self.__handle_name()
         self.__handle_lore()
         self.__handle_unbreakable()
@@ -532,7 +539,7 @@ class GUI():
         self.__handle_data(self.__StringVar_armorToughness.get(), 'generic.armorToughness')
         self.__handle_data(self.__StringVar_knockbackResistance.get(), 'generic.knockbackResistance')
 
-        data = str(self.__dict)
+        data = str(self.__itemDict)
         exp = "'([0-9a-zA-Z]+)': "
         pat = re.compile(exp)
         data = re.sub(exp, r'\g<1>: ', data)
@@ -550,4 +557,4 @@ class GUI():
 
 
 if __name__ == '__main__':
-    GUI()
+    main = GUI()
