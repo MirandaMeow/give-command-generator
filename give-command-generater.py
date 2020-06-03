@@ -30,7 +30,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.6.0.3")
+        self.__init_window.title("指令生成转换器 - Ver 1.6.0.4")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -81,7 +81,7 @@ class GUI():
         self.__StringVar_lore = StringVar()
         self.__StringVar_lore.set('')
         self.__Entry_lore = Entry(self.__init_window, textvariable=self.__StringVar_lore)
-        self.__Entry_lore.place(x=70, y=60, width=189)
+        self.__Entry_lore.place(x=70, y=60, width=190)
 
         self.__Label_part = Label(self.__init_window, text='部位：')
         self.__Label_part.place(x=20, y=100)
@@ -90,14 +90,14 @@ class GUI():
         self.__Combobox_part = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_part, width=4)
         self.__Combobox_part['value'] = ("头盔", "胸甲", "腿甲", "靴子", "主手", "副手")
         self.__Combobox_part['state'] = 'readonly'
-        self.__Combobox_part.place(x=70, y=100)
+        self.__Combobox_part.place(x=70, y=100, relwidth=0.082)
 
         self.__Label_maxHealth = Label(self.__init_window, text='生命值：')
         self.__Label_maxHealth.place(x=20, y=140)
         self.__StringVar_maxHealth = StringVar()
         self.__StringVar_maxHealth.set('')
         self.__Entry_maxHealth = Entry(self.__init_window, textvariable=self.__StringVar_maxHealth)
-        self.__Entry_maxHealth.place(x=70, y=140, width=40)
+        self.__Entry_maxHealth.place(x=70, y=140, width=50)
 
         self.__Label_unbreakable = Label(self.__init_window, text='不可破坏：')
         self.__Label_unbreakable.place(x=145, y=140)
@@ -106,61 +106,61 @@ class GUI():
         self.__Combobox_unbreakable = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_unbreakable, width=2)
         self.__Combobox_unbreakable['value'] = ("是", "否")
         self.__Combobox_unbreakable['state'] = 'readonly'
-        self.__Combobox_unbreakable.place(x=223, y=140)
+        self.__Combobox_unbreakable.place(x=210, y=140, relwidth=0.082)
 
         self.__Label_attackDamage = Label(self.__init_window, text='伤害值：')
         self.__Label_attackDamage.place(x=20, y=180)
         self.__StringVar_attackDamage = StringVar()
         self.__StringVar_attackDamage.set('')
         self.__Entry_attackDamage = Entry(self.__init_window, textvariable=self.__StringVar_attackDamage)
-        self.__Entry_attackDamage.place(x=70, y=180, width=40)
+        self.__Entry_attackDamage.place(x=70, y=180, width=50)
 
         self.__Label_armor = Label(self.__init_window, text='护甲值：')
         self.__Label_armor.place(x=145, y=180)
         self.__StringVar_armor = StringVar()
         self.__StringVar_armor.set('')
         self.__Entry_armor = Entry(self.__init_window, textvariable=self.__StringVar_armor)
-        self.__Entry_armor.place(x=220, y=180, width=40)
+        self.__Entry_armor.place(x=210, y=180, width=50)
 
         self.__Label_attackSpeed = Label(self.__init_window, text='攻速：')
         self.__Label_attackSpeed.place(x=20, y=220)
         self.__StringVar_attackSpeed = StringVar()
         self.__StringVar_attackSpeed.set('')
         self.__Entry_attackspeed = Entry(self.__init_window, textvariable=self.__StringVar_attackSpeed)
-        self.__Entry_attackspeed.place(x=70, y=220, width=40)
+        self.__Entry_attackspeed.place(x=70, y=220, width=50)
 
         self.__Label_movementSpeed = Label(self.__init_window, text='移速：')
         self.__Label_movementSpeed.place(x=145, y=220)
         self.__StringVar_movementSpeed = StringVar()
         self.__StringVar_movementSpeed.set('')
         self.__Entry_movementSpeed = Entry(self.__init_window, textvariable=self.__StringVar_movementSpeed)
-        self.__Entry_movementSpeed.place(x=220, y=220, width=40)
+        self.__Entry_movementSpeed.place(x=210, y=220, width=50)
 
         self.__Label_armorToughness = Label(self.__init_window, text='韧性：')
         self.__Label_armorToughness.place(x=20, y=260)
         self.__StringVar_armorToughness = StringVar()
         self.__StringVar_armorToughness.set('')
         self.__Entry_armorToughness = Entry(self.__init_window, textvariable=self.__StringVar_armorToughness)
-        self.__Entry_armorToughness.place(x=70, y=260, width=40)
+        self.__Entry_armorToughness.place(x=70, y=260, width=50)
 
         self.__Label_knockbackResistance = Label(self.__init_window, text='抗击退：')
         self.__Label_knockbackResistance.place(x=145, y=260)
         self.__StringVar_knockbackResistance = StringVar()
         self.__StringVar_knockbackResistance.set('')
         self.__Entry_knockbackResistance = Entry(self.__init_window, textvariable=self.__StringVar_knockbackResistance)
-        self.__Entry_knockbackResistance.place(x=220, y=260, width=40)
+        self.__Entry_knockbackResistance.place(x=210, y=260, width=50)
 
         self.__Button_save = Button(self.__init_window, text="-->", command=self.__save_to_list, width=6)
-        self.__Button_save.place(x=280, y=70)
+        self.__Button_save.place(x=280, y=50)
 
         self.__Button_load = Button(self.__init_window, text="<--", command=self.__load_from_list, width=6)
-        self.__Button_load.place(x=280, y=130)
+        self.__Button_load.place(x=280, y=110)
 
         self.__Button_delete = Button(self.__init_window, text="删除", command=self.__delete_Select, width=6)
-        self.__Button_delete.place(x=280, y=190)
+        self.__Button_delete.place(x=280, y=170)
 
         self.__Button_reset = Button(self.__init_window, text="重置", command=self.__reset, width=6)
-        self.__Button_reset.place(x=280, y=250)
+        self.__Button_reset.place(x=280, y=230)
 
         self.__Text_showData = Text(self.__init_window, height=10, width=77)
         self.__Scrollbar_showData = Scrollbar(self.__init_window)
@@ -299,7 +299,7 @@ class GUI():
 
     def __save_file_yaml(self):
         self.__output_all_yaml()
-        file_path = filedialog.asksaveasfilename(title=u'保存文件', filetypes=[('YAML 数据文件', '*.yml')   ], defaultextension=".yml")
+        file_path = filedialog.asksaveasfilename(title=u'保存文件', filetypes=[('YAML 数据文件', '*.yml')], defaultextension=".yml")
         if file_path is not '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 yaml.safe_dump(self.__yamls, file, default_flow_style=False, encoding='utf-8', allow_unicode=True)
