@@ -10,7 +10,6 @@ import xlrd
 import win32clipboard
 import time
 
-
 class GUI():
     def __init__(self):
         self.__slot_conv = {
@@ -62,9 +61,9 @@ class GUI():
         self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
-        
+
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.7.0.3")
+        self.__init_window.title("指令生成转换器 - Ver 1.7.0.4")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('600x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -239,18 +238,22 @@ class GUI():
             self.__egg = 0
             self.__init_window.title("指令生成转换器 - OAO")
         else:
-            self.__init_window.title("指令生成转换器 - Ver 1.7.0.3")
+            self.__init_window.title("指令生成转换器 - Ver 1.7.0.4")
 
 
     def __init_enchantment(self):
+        self.__init_window.update()
+        main_x, main_y = self.__init_window.winfo_x(), self.__init_window.winfo_y()
         if self.__open_flag == True:
             return
         self.__open_flag = True
         self.__init_enchantment_window = Toplevel()
         self.__init_enchantment_window.title('附魔设置')
         self.__init_enchantment_window.resizable(0, 0)
-        x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
-        self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(int(x / 3) + 600, int(y / 4)))
+        if main_x < 1060:
+            self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(main_x + 600, main_y))
+        else:
+            self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(main_x - 250, main_y))
 
         self.__enchantmentList = ttk.Treeview(self.__init_enchantment_window, columns=["序号", "附魔名称", "等级"], show='headings', selectmode="browse", height=15)
         self.__enchantmentList.column("序号", width=50)
