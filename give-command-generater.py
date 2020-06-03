@@ -13,7 +13,7 @@ import time
 
 class GUI():
     def __init__(self):
-        self.__slot_list = {
+        self.__slot_conv = {
             '头盔': 'head',
             '胸甲': 'chest',
             '腿甲': 'legs',
@@ -21,18 +21,52 @@ class GUI():
             '主手': 'mainhand',
             '副手': 'offhand'
         }
+        self.__ench_Conv = {
+        '保护': 0,
+        '火焰保护': 1,
+        '摔落保护': 2,
+        '爆炸保护': 3,
+        '弹射物保护': 4,
+        '水下呼吸': 5,
+        '水下速掘': 6,
+        '荆棘': 7,
+        '深海探索者': 8,
+        '绑定诅咒': 10,
+        '锋利': 16,
+        '亡灵杀手': 17,
+        '节肢杀手': 18,
+        '击退': 19,
+        '火焰附加': 20,
+        '抢夺': 21,
+        '效率': 32,
+        '精准采集': 33,
+        '耐久': 34,
+        '时运': 35,
+        '力量': 48,
+        '冲击': 49,
+        '火矢': 50,
+        '无限': 51,
+        '海之眷顾': 61,
+        '饵钓': 62,
+        '经验修补': 70,
+        '消失诅咒': 71
+        }
         self.__items = []
         self.__datas = []
         self.__yamls = {}
+        self.__itemEnchantment = []
+        self.__tempEnch = []
         self.__init_window = Tk()
-        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': []}
+        self.__open_flag = False
+        self.__egg = 0
+        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
-
+        
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.6.0.4")
+        self.__init_window.title("指令生成转换器 - Ver 1.7.0.1")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
-        self.__init_window.geometry('610x520+{0}+{1}'.format(int(x / 3), int(y / 4)))
+        self.__init_window.geometry('610x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
         # self.__init_window.attributes("-alpha", 0.6)
         self.__Menu_menu = Menu(self.__init_window)
@@ -51,8 +85,7 @@ class GUI():
         self.__Menu_menu.add_cascade(label="关于", command=self.__about)
         self.__init_window.config(menu=self.__Menu_menu)
 
-        self.__itemList = ttk.Treeview(self.__init_window, columns=[
-                                       "序号", "物品名称"], show='headings', selectmode="browse", height=12)
+        self.__itemList = ttk.Treeview(self.__init_window, columns=["序号", "物品名称"], show='headings', selectmode="browse", height=13)
         self.__Scrollbar_itemList = ttk.Scrollbar(self.__itemList, orient="vertical", command=self.__itemList.yview)
         self.__Scrollbar_itemList.place(relx=0.925, rely=0.02, relwidth=0.07, relheight=0.97)
         self.__itemList.configure(yscrollcommand=self.__Scrollbar_itemList.set)
@@ -77,128 +110,231 @@ class GUI():
         self.__Entry_id.place(x=200, y=20, width=60)
 
         self.__Label_lore = Label(self.__init_window, text='说明：')
-        self.__Label_lore.place(x=20, y=60)
+        self.__Label_lore.place(x=20, y=50)
         self.__StringVar_lore = StringVar()
         self.__StringVar_lore.set('')
         self.__Entry_lore = Entry(self.__init_window, textvariable=self.__StringVar_lore)
-        self.__Entry_lore.place(x=70, y=60, width=190)
+        self.__Entry_lore.place(x=70, y=50, width=190)
 
         self.__Label_part = Label(self.__init_window, text='部位：')
-        self.__Label_part.place(x=20, y=100)
+        self.__Label_part.place(x=20, y=80)
         self.__StringVar_part = StringVar()
         self.__StringVar_part.set("头盔")
         self.__Combobox_part = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_part, width=4)
         self.__Combobox_part['value'] = ("头盔", "胸甲", "腿甲", "靴子", "主手", "副手")
         self.__Combobox_part['state'] = 'readonly'
-        self.__Combobox_part.place(x=70, y=100, relwidth=0.082)
+        self.__Combobox_part.place(x=70, y=80, relwidth=0.082)
+
+        self.__Button_enchantment = Button(self.__init_window, text='附魔设置', command=self.__init_enchantment)
+        self.__Button_enchantment.place(x=148, y=80, height=23, width=112)
 
         self.__Label_maxHealth = Label(self.__init_window, text='生命值：')
-        self.__Label_maxHealth.place(x=20, y=140)
+        self.__Label_maxHealth.place(x=20, y=110)
         self.__StringVar_maxHealth = StringVar()
         self.__StringVar_maxHealth.set('')
         self.__Entry_maxHealth = Entry(self.__init_window, textvariable=self.__StringVar_maxHealth)
-        self.__Entry_maxHealth.place(x=70, y=140, width=50)
+        self.__Entry_maxHealth.place(x=70, y=110, width=50)
 
         self.__Label_unbreakable = Label(self.__init_window, text='不可破坏：')
-        self.__Label_unbreakable.place(x=145, y=140)
+        self.__Label_unbreakable.place(x=145, y=110)
         self.__StringVar_unbreakable = StringVar()
         self.__StringVar_unbreakable.set("否")
         self.__Combobox_unbreakable = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_unbreakable, width=2)
         self.__Combobox_unbreakable['value'] = ("是", "否")
         self.__Combobox_unbreakable['state'] = 'readonly'
-        self.__Combobox_unbreakable.place(x=210, y=140, relwidth=0.082)
+        self.__Combobox_unbreakable.place(x=210, y=110, relwidth=0.082)
 
         self.__Label_attackDamage = Label(self.__init_window, text='伤害值：')
-        self.__Label_attackDamage.place(x=20, y=180)
+        self.__Label_attackDamage.place(x=20, y=140)
         self.__StringVar_attackDamage = StringVar()
         self.__StringVar_attackDamage.set('')
         self.__Entry_attackDamage = Entry(self.__init_window, textvariable=self.__StringVar_attackDamage)
-        self.__Entry_attackDamage.place(x=70, y=180, width=50)
+        self.__Entry_attackDamage.place(x=70, y=140, width=50)
 
         self.__Label_armor = Label(self.__init_window, text='护甲值：')
-        self.__Label_armor.place(x=145, y=180)
+        self.__Label_armor.place(x=145, y=140)
         self.__StringVar_armor = StringVar()
         self.__StringVar_armor.set('')
         self.__Entry_armor = Entry(self.__init_window, textvariable=self.__StringVar_armor)
-        self.__Entry_armor.place(x=210, y=180, width=50)
+        self.__Entry_armor.place(x=210, y=140, width=50)
 
         self.__Label_attackSpeed = Label(self.__init_window, text='攻速：')
-        self.__Label_attackSpeed.place(x=20, y=220)
+        self.__Label_attackSpeed.place(x=20, y=170)
         self.__StringVar_attackSpeed = StringVar()
         self.__StringVar_attackSpeed.set('')
         self.__Entry_attackspeed = Entry(self.__init_window, textvariable=self.__StringVar_attackSpeed)
-        self.__Entry_attackspeed.place(x=70, y=220, width=50)
+        self.__Entry_attackspeed.place(x=70, y=170, width=50)
 
         self.__Label_movementSpeed = Label(self.__init_window, text='移速：')
-        self.__Label_movementSpeed.place(x=145, y=220)
+        self.__Label_movementSpeed.place(x=145, y=170)
         self.__StringVar_movementSpeed = StringVar()
         self.__StringVar_movementSpeed.set('')
         self.__Entry_movementSpeed = Entry(self.__init_window, textvariable=self.__StringVar_movementSpeed)
-        self.__Entry_movementSpeed.place(x=210, y=220, width=50)
+        self.__Entry_movementSpeed.place(x=210, y=170, width=50)
 
         self.__Label_armorToughness = Label(self.__init_window, text='韧性：')
-        self.__Label_armorToughness.place(x=20, y=260)
+        self.__Label_armorToughness.place(x=20, y=200)
         self.__StringVar_armorToughness = StringVar()
         self.__StringVar_armorToughness.set('')
         self.__Entry_armorToughness = Entry(self.__init_window, textvariable=self.__StringVar_armorToughness)
-        self.__Entry_armorToughness.place(x=70, y=260, width=50)
+        self.__Entry_armorToughness.place(x=70, y=200, width=50)
 
         self.__Label_knockbackResistance = Label(self.__init_window, text='抗击退：')
-        self.__Label_knockbackResistance.place(x=145, y=260)
+        self.__Label_knockbackResistance.place(x=145, y=200)
         self.__StringVar_knockbackResistance = StringVar()
         self.__StringVar_knockbackResistance.set('')
         self.__Entry_knockbackResistance = Entry(self.__init_window, textvariable=self.__StringVar_knockbackResistance)
-        self.__Entry_knockbackResistance.place(x=210, y=260, width=50)
+        self.__Entry_knockbackResistance.place(x=210, y=200, width=50)
 
         self.__Button_save = Button(self.__init_window, text="-->", command=self.__save_to_list, width=6)
-        self.__Button_save.place(x=280, y=50)
-
-        self.__Button_load = Button(self.__init_window, text="<--", command=self.__load_from_list, width=6)
-        self.__Button_load.place(x=280, y=110)
+        self.__Button_save.place(x=280, y=40)
 
         self.__Button_delete = Button(self.__init_window, text="删除", command=self.__delete_Select, width=6)
-        self.__Button_delete.place(x=280, y=170)
+        self.__Button_delete.place(x=280, y=110)
+
+        self.__Button_load = Button(self.__init_window, text="<--", command=self.__load_from_list, width=6)
+        self.__Button_load.place(x=280, y=180)
 
         self.__Button_reset = Button(self.__init_window, text="重置", command=self.__reset, width=6)
-        self.__Button_reset.place(x=280, y=230)
+        self.__Button_reset.place(x=280, y=250)
 
         self.__Text_showData = Text(self.__init_window, height=10, width=77)
         self.__Scrollbar_showData = Scrollbar(self.__init_window)
-        self.__Scrollbar_showData.place(x=565, y=350, relheight=0.27)
+        self.__Scrollbar_showData.place(x=565, y=330, relheight=0.26)
         self.__Text_showData.config(yscrollcommand=self.__Scrollbar_showData.set)
-        self.__Text_showData.place(x=20, y=350)
+        self.__Text_showData.place(x=20, y=330)
         self.__Scrollbar_showData.config(command=self.__Text_showData.yview)
 
         self.__IntVar_ATTRIBUTES = IntVar(value=0)
         self.__CheckButton_ATTRIBUTES = Checkbutton(self.__init_window, text='ATTRIBUTES', variable=self.__IntVar_ATTRIBUTES)
-        self.__CheckButton_ATTRIBUTES.place(x=20, y=290)
+        self.__CheckButton_ATTRIBUTES.place(x=20, y=230)
 
         self.__IntVar_ENCHANTS = IntVar(value=0)
         self.__CheckButton_ENCHANTS = Checkbutton(self.__init_window, text='ENCHANTS', variable=self.__IntVar_ENCHANTS)
-        self.__CheckButton_ENCHANTS.place(x=150, y=290)
+        self.__CheckButton_ENCHANTS.place(x=150, y=230)
 
         self.__IntVar_DESTROYS = IntVar(value=0)
         self.__CheckButton_DESTROYS = Checkbutton(self.__init_window, text='DESTROYS', variable=self.__IntVar_DESTROYS)
-        self.__CheckButton_DESTROYS.place(x=280, y=290)
+        self.__CheckButton_DESTROYS.place(x=20, y=260)
 
         self.__IntVar_PLACED_ON = IntVar(value=0)
         self.__CheckButton_PLACED_ON = Checkbutton(self.__init_window, text='PLACED_ON', variable=self.__IntVar_PLACED_ON)
-        self.__CheckButton_PLACED_ON.place(x=20, y=320)
+        self.__CheckButton_PLACED_ON.place(x=150, y=260)
 
         self.__IntVar_POTION_EFFECTS = IntVar(value=0)
-        self.__CheckButton_POTION_EFFECTS = Checkbutton(
-            self.__init_window, text='POTION_EFFECTS', variable=self.__IntVar_POTION_EFFECTS)
-        self.__CheckButton_POTION_EFFECTS.place(x=150, y=320)
+        self.__CheckButton_POTION_EFFECTS = Checkbutton(self.__init_window, text='POTION_EFFECTS', variable=self.__IntVar_POTION_EFFECTS)
+        self.__CheckButton_POTION_EFFECTS.place(x=20, y=290)
 
         self.__IntVar_UNBREAKABLE = IntVar(value=0)
         self.__CheckButton_UNBREAKABLE = Checkbutton(self.__init_window, text='UNBREAKABLE', variable=self.__IntVar_UNBREAKABLE)
-        self.__CheckButton_UNBREAKABLE.place(x=280, y=320)
+        self.__CheckButton_UNBREAKABLE.place(x=150, y=290)
 
         self.__Label_statusText = Label(self.__init_window, text='{0} 程序初始化完成'.format(self.__getTime()))
-        self.__Label_statusText.place(x=20, y=490)
+        self.__Label_statusText.place(x=20, y=470)
 
     def __about(self):
         messagebox.showinfo("关于", "开发者：MirandaMeow")
+        self.__egg += 1
+        if self.__egg ==3:
+            self.__egg = 0
+            self.__init_window.title("指令生成转换器 - OAO")
+        else:
+            self.__init_window.title("指令生成转换器 - Ver 1.7.0.1")
+
+
+    def __init_enchantment(self):
+        if self.__open_flag == True:
+            return
+        self.__open_flag = True
+        self.__init_enchantment_window = Toplevel()
+        self.__init_enchantment_window.title('附魔设置')
+        self.__init_enchantment_window.resizable(0, 0)
+        x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
+        self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(int(x / 3) + 300, int(y / 4) + 20))
+
+        self.__enchantmentList = ttk.Treeview(self.__init_enchantment_window, columns=["序号", "附魔名称", "等级"], show='headings', selectmode="browse", height=15)
+        self.__enchantmentList.column("序号", width=50)
+        self.__enchantmentList.column("附魔名称", width=110)
+        self.__enchantmentList.column("等级", width=83)
+        self.__enchantmentList.heading("序号", text="序号")
+        self.__enchantmentList.heading("附魔名称", text="附魔名称")
+        self.__enchantmentList.heading("等级", text="等级")
+        self.__enchantmentList.place(x=2, y=2)
+
+        self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="+", command=self.__add_enchantment, width=6)
+        self.__Button_add_enchantment.place(x=40, y=340)
+
+        self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="-", command=self.__remove_enchantment, width=6)
+        self.__Button_add_enchantment.place(x=155, y=340)
+
+        self.__Label_enchantment_name = Label(self.__init_enchantment_window, text='附魔名称：')
+        self.__Label_enchantment_name.place(x=20, y=380)
+        self.__StringVar_enchantment_name = StringVar()
+        self.__StringVar_enchantment_name.set("保护")
+        self.__Combobox_enchantment_name = ttk.Combobox(self.__init_enchantment_window, textvariable=self.__StringVar_enchantment_name, width=12)
+        self.__Combobox_enchantment_name['value'] = ('保护', '火焰保护', '摔落保护', '爆炸保护', '弹射物保护', '水下呼吸', '水下速掘', '荆棘', '深海探索者', '绑定诅咒', '锋利', '亡灵杀手', '节肢杀手', '击退', '火焰附加', '抢夺', '效率', '精准采集', '耐久', '时运', '力量', '冲击', '火矢', '无限', '海之眷顾', '饵钓', '经验修补', '消失诅咒')
+        self.__Combobox_enchantment_name['state'] = 'readonly'
+        self.__Combobox_enchantment_name.place(x=80, y=380)
+
+        self.__Label_enchantment_level = Label(self.__init_enchantment_window, text='附魔等级：')
+        self.__Label_enchantment_level.place(x=20, y=420)
+        self.__StringVar_enchantment_level = IntVar()
+        self.__StringVar_enchantment_level.set("1")
+        self.__Combobox_enchantment_level = ttk.Combobox(self.__init_enchantment_window, textvariable=self.__StringVar_enchantment_level, width=12)
+        tempInt = []
+        for i in range(1, 128):
+            tempInt.append(i)
+        self.__Combobox_enchantment_level['value'] = tempInt
+        self.__Combobox_enchantment_level['state'] = 'readonly'
+        self.__Combobox_enchantment_level.place(x=80, y=420)
+        self.__refresh_enchantment()
+        self.__itemEnchantment = self.__itemDict['ench']
+        tempList = []
+        for i in range(len(self.__itemEnchantment)):
+            tempList.append({'id': self.__find_key(self.__ench_Conv, self.__itemEnchantment[i]['id']), 'lvl': self.__itemEnchantment[i]['lvl']})
+        self.__itemEnchantment = tempList
+        self.__init_enchantment_window.protocol('WM_DELETE_WINDOW', self.__close_window)
+        self.__init_enchantment_window.mainloop()
+        self.__open_flag = False
+
+    def __close_window(self):
+        self.__init_enchantment_window.destroy()
+        self.__open_flag = False
+
+    def __find_key(self, dict, target):
+        for i in dict:
+            if dict[i] == target:
+                return i
+
+    def __refresh_enchantment(self):
+        self.__clearList(self.__enchantmentList)
+        count = 0
+        for i in self.__itemEnchantment:
+            ench_name = i['id']
+            ench_level = i['lvl']
+            count += 1
+            self.__enchantmentList.insert('', END, value=[count, ench_name, ench_level])
+
+    def __add_enchantment(self):
+        ench_name = self.__StringVar_enchantment_name.get()
+        ench_level = self.__StringVar_enchantment_level.get()
+        temp = {'id': ench_name, 'lvl': ench_level}
+        self.__itemEnchantment.append(temp)
+        self.__refresh_enchantment()
+        temp = self.__itemEnchantment
+        self.__tempEnch = []
+        for i in range(len(temp)):
+            self.__tempEnch.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
+
+    def __remove_enchantment(self):
+        select = self.__enchantmentList.focus()
+        if select == '' or None:
+            return
+        selected = self.__selectItem(self.__enchantmentList) - 1
+        self.__enchantmentList.delete(select)
+        del self.__itemEnchantment[selected]
+        self.__refresh_enchantment()
+        self.__tempEnch = self.__itemEnchantment
 
     def __get_desktop(self):
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders',)
@@ -261,6 +397,7 @@ class GUI():
                     temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
                     temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
                     temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
+                    temp['ench'] = []
                     self.__items.append(temp)
                     self.__refreshList()
                     count += 1
@@ -305,20 +442,20 @@ class GUI():
                 yaml.safe_dump(self.__yamls, file, default_flow_style=False, encoding='utf-8', allow_unicode=True)
             self.__Label_statusText['text'] = '{0} 导出成功'.format(self.__getTime())
 
-    def __selectItem(self):
-        if len(self.__itemList.selection()) != 0:
-            return self.__itemList.item(self.__itemList.selection()[0])['values'][0]
+    def __selectItem(self, listObj):
+        if len(listObj.selection()) != 0:
+            return listObj.item(listObj.selection()[0])['values'][0]
 
     def __clear_show_data(self):
         self.__Text_showData.delete(1.0, END)
 
-    def __clearList(self):
-        items = self.__itemList.get_children()
+    def __clearList(self, listObj):
+        items = listObj.get_children()
         for item in items:
-            self.__itemList.delete(item)
+            listObj.delete(item)
 
     def __refreshList(self):
-        self.__clearList()
+        self.__clearList(self.__itemList)
         count = 0
         for i in range(len(self.__items)):
             self.__itemList.insert('', END, value=[i + 1, self.__items[i]['Name']])
@@ -348,6 +485,7 @@ class GUI():
         temp['hides']['PLACED_ON'] = self.__IntVar_PLACED_ON.get()
         temp['hides']['POTION_EFFECTS'] = self.__IntVar_POTION_EFFECTS.get()
         temp['hides']['UNBREAKABLE'] = self.__IntVar_UNBREAKABLE.get()
+        temp['ench'] = self.__itemEnchantment
         self.__items.append(temp)
         self.__refreshList()
         self.__setText(self.__generate())
@@ -358,7 +496,7 @@ class GUI():
         if select == '' or None:
             self.__Label_statusText['text'] = '{0} 没有选择物品'.format(self.__getTime())
             return
-        selected = self.__selectItem() - 1
+        selected = self.__selectItem(self.__itemList) - 1
         self.__itemList.delete(select)
         del self.__items[selected]
         self.__refreshList()
@@ -366,11 +504,11 @@ class GUI():
         self.__Label_statusText['text'] = '{0} 选择的物品已删除'.format(self.__getTime())
 
     def __load_from_list(self):
-        select = self.__selectItem()
+        select = self.__selectItem(self.__itemList)
         if select == None:
             self.__Label_statusText['text'] = '{0} 没有选择物品'.format(self.__getTime())
             return
-        selected = self.__selectItem() - 1
+        selected = self.__selectItem(self.__itemList) - 1
         temp = self.__items[selected]
         self.__StringVar_name.set(temp['Name'])
         self.__StringVar_id.set(temp['id'])
@@ -390,6 +528,11 @@ class GUI():
         self.__IntVar_PLACED_ON.set(temp['hides']['PLACED_ON'])
         self.__IntVar_POTION_EFFECTS.set(temp['hides']['POTION_EFFECTS'])
         self.__IntVar_UNBREAKABLE.set(temp['hides']['UNBREAKABLE'])
+        self.__itemEnchantment = temp['ench']
+        temp = self.__itemEnchantment
+        self.__tempEnch = []
+        for i in range(len(temp)):
+            self.__tempEnch.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
         self.__setText(self.__generate())
         self.__Label_statusText['text'] = '{0} 已从列表载入物品信息，指令已复制到剪切板'.format(self.__getTime())
 
@@ -412,6 +555,11 @@ class GUI():
         self.__IntVar_PLACED_ON.set(0)
         self.__IntVar_POTION_EFFECTS.set(0)
         self.__IntVar_UNBREAKABLE.set(0)
+        self.__itemEnchantment = []
+        try:
+            self.__clearList(self.__enchantmentList)
+        except:
+            return
 
     def __reset(self):
         self.__reset_window()
@@ -451,6 +599,7 @@ class GUI():
             self.__StringVar_knockbackResistance.set(temp['attributes']['knockbackResistance'])
             self.__StringVar_part.set(temp['part'])
             self.__StringVar_unbreakable.set(temp['unbreakable'])
+            self.__itemEnchantment = temp['ench']
             tempData = self.__generate()
             self.__datas.append(tempData)
         self.__Text_showData.delete(1.0, END)
@@ -476,7 +625,11 @@ class GUI():
             currentItem['Display'] = temp['Name']
             currentItem['Lore'] = [temp['lore']]
             currentItem['Attributes'] = {}
-            currentItem['Attributes'][self.__slot_list[temp['part']]] = {}
+            currentItem['Attributes'][self.__slot_conv[temp['part']]] = {}
+            currentItem['Enchantments'] = []
+            ench = temp['ench']
+            for i in range(len(ench)):
+                currentItem['Enchantments'].append('{0}:{1}'.format(self.__ench_Conv[ench[i]['id']], ench[i]['lvl']))
             selectedHides = temp['hides']
             hides = []
             for i in selectedHides:
@@ -484,14 +637,13 @@ class GUI():
                     hides.append(i)
             currentItem['Hide'] = hides
             if temp['unbreakable'] == '是':
-                currentItem['Unbreakable'] = True
-            else:
-                currentItem['Unbreakable'] = False
+                currentItem['Options'] = {}
+                currentItem['Options']['Unbreakable'] = True
             for i in ['maxHealth', 'attackDamage', 'armor', 'attackSpeed', 'movementSpeed', 'armorToughness', 'knockbackResistance']:
                 if temp['attributes'][i] == '':
                     continue
                 else:
-                    currentItem['Attributes'][self.__slot_list[temp['part']]][i] = float(self.__handle_number(str(temp['attributes'][i])))
+                    currentItem['Attributes'][self.__slot_conv[temp['part']]][i] = float(self.__handle_number(str(temp['attributes'][i])))
 
     def __random_Number(self, digit):
         numbers = '0123456789'
@@ -537,11 +689,11 @@ class GUI():
             temp['Amount'] = float(int_value) / 100
         temp['UUIDLeast'] = int(self.__random_Number(3))
         temp['UUIDMost'] = int(self.__random_Number(3))
-        temp['Slot'] = self.__slot_list[self.__StringVar_part.get()]
+        temp['Slot'] = self.__slot_conv[self.__StringVar_part.get()]
         self.__itemDict['AttributeModifiers'].append(temp)
 
     def __generate(self):
-        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': []}
+        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__handle_name()
         self.__handle_lore()
         self.__handle_unbreakable()
@@ -552,6 +704,7 @@ class GUI():
         self.__handle_data(self.__StringVar_movementSpeed.get(), 'generic.movementSpeed')
         self.__handle_data(self.__StringVar_armorToughness.get(), 'generic.armorToughness')
         self.__handle_data(self.__StringVar_knockbackResistance.get(), 'generic.knockbackResistance')
+        self.__itemDict['ench'] = self.__tempEnch
 
         data = str(self.__itemDict)
         exp = "'([0-9a-zA-Z]+)': "
