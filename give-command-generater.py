@@ -210,7 +210,12 @@ class GUI():
         if file_path is not '':
             with open(file=file_path, mode='r', encoding='utf-8') as file:
                 try:
-                    self.__items += json.load(file)
+                    fileJson = json.load(file)
+                    for i in range(len(fileJson)):
+                        if fileJson[i]['part'] not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or fileJson[i]['unbreakable'] not in ["是", "否"]:
+                            self.__Label_statusText['text'] = '{0} 数据格式不正确'.format(self.__getTime())
+                            return
+                    self.__items += fileJson
                 except:
                     self.__Label_statusText['text'] = '{0} 打开文件 {1} 时发生错误'.format(self.__getTime(), file_path)
                     return
