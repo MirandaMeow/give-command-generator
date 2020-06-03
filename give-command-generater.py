@@ -64,9 +64,9 @@ class GUI():
         self.__init_window.mainloop()
         
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.7.0.1")
+        self.__init_window.title("指令生成转换器 - Ver 1.7.0.3")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
-        self.__init_window.geometry('610x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
+        self.__init_window.geometry('600x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
         # self.__init_window.attributes("-alpha", 0.6)
         self.__Menu_menu = Menu(self.__init_window)
@@ -86,11 +86,11 @@ class GUI():
         self.__init_window.config(menu=self.__Menu_menu)
 
         self.__itemList = ttk.Treeview(self.__init_window, columns=["序号", "物品名称"], show='headings', selectmode="browse", height=13)
-        self.__Scrollbar_itemList = ttk.Scrollbar(self.__itemList, orient="vertical", command=self.__itemList.yview)
-        self.__Scrollbar_itemList.place(relx=0.925, rely=0.02, relwidth=0.07, relheight=0.97)
+        self.__Scrollbar_itemList = ttk.Scrollbar(self.__init_window, orient="vertical", command=self.__itemList.yview)
+        self.__Scrollbar_itemList.place(x=563, y=20, relheight=0.574)
         self.__itemList.configure(yscrollcommand=self.__Scrollbar_itemList.set)
-        self.__itemList.column("序号", width=50)
-        self.__itemList.column("物品名称", width=180)
+        self.__itemList.column("序号", width=40)
+        self.__itemList.column("物品名称", width=170)
         self.__itemList.heading("序号", text="序号")
         self.__itemList.heading("物品名称", text="物品名称")
         self.__itemList.place(x=350, y=20)
@@ -200,7 +200,7 @@ class GUI():
 
         self.__Text_showData = Text(self.__init_window, height=10, width=77)
         self.__Scrollbar_showData = Scrollbar(self.__init_window)
-        self.__Scrollbar_showData.place(x=565, y=330, relheight=0.26)
+        self.__Scrollbar_showData.place(x=563, y=330, relheight=0.268)
         self.__Text_showData.config(yscrollcommand=self.__Scrollbar_showData.set)
         self.__Text_showData.place(x=20, y=330)
         self.__Scrollbar_showData.config(command=self.__Text_showData.yview)
@@ -239,7 +239,7 @@ class GUI():
             self.__egg = 0
             self.__init_window.title("指令生成转换器 - OAO")
         else:
-            self.__init_window.title("指令生成转换器 - Ver 1.7.0.1")
+            self.__init_window.title("指令生成转换器 - Ver 1.7.0.3")
 
 
     def __init_enchantment(self):
@@ -250,7 +250,7 @@ class GUI():
         self.__init_enchantment_window.title('附魔设置')
         self.__init_enchantment_window.resizable(0, 0)
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
-        self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(int(x / 3) + 300, int(y / 4) + 20))
+        self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(int(x / 3) + 600, int(y / 4)))
 
         self.__enchantmentList = ttk.Treeview(self.__init_enchantment_window, columns=["序号", "附魔名称", "等级"], show='headings', selectmode="browse", height=15)
         self.__enchantmentList.column("序号", width=50)
