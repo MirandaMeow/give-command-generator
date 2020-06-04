@@ -244,13 +244,14 @@ class GUI():
     def __init_enchantment(self):
         self.__init_window.update()
         main_x, main_y = self.__init_window.winfo_x(), self.__init_window.winfo_y()
+        print(main_x)
         if self.__open_flag == True:
             return
         self.__open_flag = True
         self.__init_enchantment_window = Toplevel()
         self.__init_enchantment_window.title('附魔设置')
         self.__init_enchantment_window.resizable(0, 0)
-        if main_x < 1060:
+        if main_x < self.__init_window.winfo_screenwidth() - 600 - 250:
             self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(main_x + 600, main_y))
         else:
             self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(main_x - 250, main_y))
