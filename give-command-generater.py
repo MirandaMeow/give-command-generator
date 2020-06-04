@@ -54,7 +54,7 @@ class GUI():
         self.__datas = []
         self.__yamls = {}
         self.__itemEnchantment = []
-        self.__tempEnch = []
+        self.__ench_converted_to_id = []
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
@@ -63,7 +63,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.7.0.4")
+        self.__init_window.title("指令生成转换器 - Ver 1.7.0.5")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('600x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -122,7 +122,7 @@ class GUI():
         self.__Combobox_part = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_part, width=4)
         self.__Combobox_part['value'] = ("头盔", "胸甲", "腿甲", "靴子", "主手", "副手")
         self.__Combobox_part['state'] = 'readonly'
-        self.__Combobox_part.place(x=70, y=80, relwidth=0.082)
+        self.__Combobox_part.place(x=70, y=80, relwidth=0.083)
 
         self.__Button_enchantment = Button(self.__init_window, text='附魔设置', command=self.__init_enchantment)
         self.__Button_enchantment.place(x=148, y=80, height=23, width=112)
@@ -141,7 +141,7 @@ class GUI():
         self.__Combobox_unbreakable = ttk.Combobox(self.__init_window, textvariable=self.__StringVar_unbreakable, width=2)
         self.__Combobox_unbreakable['value'] = ("是", "否")
         self.__Combobox_unbreakable['state'] = 'readonly'
-        self.__Combobox_unbreakable.place(x=210, y=110, relwidth=0.082)
+        self.__Combobox_unbreakable.place(x=210, y=110, relwidth=0.083)
 
         self.__Label_attackDamage = Label(self.__init_window, text='伤害值：')
         self.__Label_attackDamage.place(x=20, y=140)
@@ -238,7 +238,7 @@ class GUI():
             self.__egg = 0
             self.__init_window.title("指令生成转换器 - OAO")
         else:
-            self.__init_window.title("指令生成转换器 - Ver 1.7.0.4")
+            self.__init_window.title("指令生成转换器 - Ver 1.7.0.5")
 
 
     def __init_enchantment(self):
@@ -284,18 +284,18 @@ class GUI():
         self.__StringVar_enchantment_level = IntVar()
         self.__StringVar_enchantment_level.set("1")
         self.__Combobox_enchantment_level = ttk.Combobox(self.__init_enchantment_window, textvariable=self.__StringVar_enchantment_level, width=12)
-        tempInt = []
+        ench_level = []
         for i in range(1, 128):
-            tempInt.append(i)
-        self.__Combobox_enchantment_level['value'] = tempInt
+            ench_level.append(i)
+        self.__Combobox_enchantment_level['value'] = ench_level
         self.__Combobox_enchantment_level['state'] = 'readonly'
         self.__Combobox_enchantment_level.place(x=80, y=420)
         self.__refresh_enchantment()
         self.__itemEnchantment = self.__itemDict['ench']
-        tempList = []
+        ench_converted_to_name = []
         for i in range(len(self.__itemEnchantment)):
-            tempList.append({'id': self.__find_key(self.__ench_Conv, self.__itemEnchantment[i]['id']), 'lvl': self.__itemEnchantment[i]['lvl']})
-        self.__itemEnchantment = tempList
+            ench_converted_to_name.append({'id': self.__find_key(self.__ench_Conv, self.__itemEnchantment[i]['id']), 'lvl': self.__itemEnchantment[i]['lvl']})
+        self.__itemEnchantment = ench_converted_to_name
         self.__init_enchantment_window.protocol('WM_DELETE_WINDOW', self.__close_window)
         self.__init_enchantment_window.mainloop()
         self.__open_flag = False
@@ -325,9 +325,9 @@ class GUI():
         self.__itemEnchantment.append(temp)
         self.__refresh_enchantment()
         temp = self.__itemEnchantment
-        self.__tempEnch = []
+        self.__ench_converted_to_id = []
         for i in range(len(temp)):
-            self.__tempEnch.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
+            self.__ench_converted_to_id.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
 
     def __remove_enchantment(self):
         select = self.__enchantmentList.focus()
@@ -337,7 +337,7 @@ class GUI():
         self.__enchantmentList.delete(select)
         del self.__itemEnchantment[selected]
         self.__refresh_enchantment()
-        self.__tempEnch = self.__itemEnchantment
+        self.__ench_converted_to_id = self.__itemEnchantment
 
     def __get_desktop(self):
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders',)
@@ -533,9 +533,9 @@ class GUI():
         self.__IntVar_UNBREAKABLE.set(temp['hides']['UNBREAKABLE'])
         self.__itemEnchantment = temp['ench']
         temp = self.__itemEnchantment
-        self.__tempEnch = []
+        self.__ench_converted_to_id = []
         for i in range(len(temp)):
-            self.__tempEnch.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
+            self.__ench_converted_to_id.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
         self.__setText(self.__generate())
         self.__Label_statusText['text'] = '{0} 已从列表载入物品信息，指令已复制到剪切板'.format(self.__getTime())
 
@@ -707,7 +707,7 @@ class GUI():
         self.__handle_data(self.__StringVar_movementSpeed.get(), 'generic.movementSpeed')
         self.__handle_data(self.__StringVar_armorToughness.get(), 'generic.armorToughness')
         self.__handle_data(self.__StringVar_knockbackResistance.get(), 'generic.knockbackResistance')
-        self.__itemDict['ench'] = self.__tempEnch
+        self.__itemDict['ench'] = self.__ench_converted_to_id
 
         data = str(self.__itemDict)
         exp = "'([0-9a-zA-Z]+)': "
