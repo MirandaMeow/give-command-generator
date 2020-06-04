@@ -244,7 +244,6 @@ class GUI():
     def __init_enchantment(self):
         self.__init_window.update()
         main_x, main_y = self.__init_window.winfo_x(), self.__init_window.winfo_y()
-        print(main_x)
         if self.__open_flag == True:
             return
         self.__open_flag = True
@@ -535,6 +534,10 @@ class GUI():
         self.__itemEnchantment = temp['ench']
         temp = self.__itemEnchantment
         self.__ench_converted_to_id = []
+        try:
+            self.__refresh_enchantment()
+        except:
+            None
         for i in range(len(temp)):
             self.__ench_converted_to_id.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
         self.__setText(self.__generate())
