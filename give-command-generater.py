@@ -63,7 +63,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.7.0.5")
+        self.__init_window.title("指令生成转换器 - Ver 1.7.0.6")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('600x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -238,13 +238,15 @@ class GUI():
             self.__egg = 0
             self.__init_window.title("指令生成转换器 - OAO")
         else:
-            self.__init_window.title("指令生成转换器 - Ver 1.7.0.5")
+            self.__init_window.title("指令生成转换器 - Ver 1.7.0.6")
 
 
     def __init_enchantment(self):
         self.__init_window.update()
         main_x, main_y = self.__init_window.winfo_x(), self.__init_window.winfo_y()
         if self.__open_flag == True:
+            self.__init_enchantment_window.destroy()
+            self.__open_flag = False
             return
         self.__open_flag = True
         self.__init_enchantment_window = Toplevel()
