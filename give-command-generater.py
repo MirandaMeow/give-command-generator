@@ -63,7 +63,7 @@ class GUI():
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.7.0.6")
+        self.__init_window.title("指令生成转换器 - Ver 1.7.0.7")
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('600x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -238,7 +238,7 @@ class GUI():
             self.__egg = 0
             self.__init_window.title("指令生成转换器 - OAO")
         else:
-            self.__init_window.title("指令生成转换器 - Ver 1.7.0.6")
+            self.__init_window.title("指令生成转换器 - Ver 1.7.0.7")
 
 
     def __init_enchantment(self):
@@ -622,8 +622,8 @@ class GUI():
             self.__Label_statusText['text'] = '{0} 列表为空'.format(self.__getTime())
 
     def __output_all_yaml(self):
-        for i in self.__items:
-            temp = i
+        self.__yamls = {}
+        for temp in self.__items:
             self.__yamls[temp['Name']] = {}
             currentItem = self.__yamls[temp['Name']]
             if temp['id'] == '':
@@ -632,7 +632,7 @@ class GUI():
                 currentItem['Id'] = int(temp['id'])
             currentItem['Data'] = 0
             currentItem['Display'] = temp['Name']
-            currentItem['Lore'] = [temp['lore']]
+            currentItem['Lore'] = temp['lore'].split(',')
             currentItem['Attributes'] = {}
             currentItem['Attributes'][self.__slot_conv[temp['part']]] = {}
             currentItem['Enchantments'] = []
@@ -670,7 +670,7 @@ class GUI():
     def __handle_lore(self):
         if self.__StringVar_lore.get() == '':
             return
-        self.__itemDict['display']['Lore'] = [self.__StringVar_lore.get()]
+        self.__itemDict['display']['Lore'] = self.__StringVar_lore.get().split(',')
 
     def __handle_unbreakable(self):
         if self.__StringVar_unbreakable.get() == '是':
@@ -724,9 +724,12 @@ class GUI():
         data = data.replace("'legs'", 'legs')
         data = data.replace("'feet'", 'feet')
         data = data.replace("'", "\"")
-        if self.__Entry_id.get() == '':
+        try:
+            set_id = int(self.__Entry_id.get())
+        except:
             self.__StringVar_id.set('0')
-        data = '/give @p {0} 1 '.format(self.__Entry_id.get()) + data
+            set_id = 0
+        data = '/give @p {0} 1 '.format(set_id) + data
         self.__Text_showData.delete(1.0, END)
         self.__Text_showData.insert('insert', data)
         return data
