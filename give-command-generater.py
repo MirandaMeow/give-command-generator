@@ -632,7 +632,7 @@ class GUI():
                 currentItem['Id'] = int(temp['id'])
             currentItem['Data'] = 0
             currentItem['Display'] = temp['Name']
-            currentItem['Lore'] = temp['lore'].split(',')
+            currentItem['Lore'] = temp['lore'].split(';')
             currentItem['Attributes'] = {}
             currentItem['Attributes'][self.__slot_conv[temp['part']]] = {}
             currentItem['Enchantments'] = []
@@ -670,7 +670,7 @@ class GUI():
     def __handle_lore(self):
         if self.__StringVar_lore.get() == '':
             return
-        self.__itemDict['display']['Lore'] = self.__StringVar_lore.get().split(',')
+        self.__itemDict['display']['Lore'] = self.__StringVar_lore.get().split(';')
 
     def __handle_unbreakable(self):
         if self.__StringVar_unbreakable.get() == '是':
