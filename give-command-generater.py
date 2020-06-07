@@ -397,47 +397,47 @@ class GUI():
                 return
             count = 0
             for i in range(sheet.nrows):
-                # try:
-                if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
-                    continue
-                temp = {}
-                temp['Name'] = sheet.cell(i, 0).value
-                if sheet.cell(i, 1).value == '':
-                    temp['id'] = 0
-                else:
-                    temp['id'] = int(sheet.cell(i, 1).value)
-                temp['lore'] = sheet.cell(i, 2).value
-                temp['attributes'] = {}
-                temp['attributes']['maxHealth'] = sheet.cell(i, 4).value
-                temp['attributes']['attackDamage'] = sheet.cell(i, 6).value
-                temp['attributes']['armor'] = sheet.cell(i, 7).value
-                temp['attributes']['attackSpeed'] = sheet.cell(i, 8).value
-                temp['attributes']['movementSpeed'] = sheet.cell(i, 9).value
-                temp['attributes']['armorToughness'] = sheet.cell(i, 10).value
-                temp['attributes']['knockbackResistance'] = sheet.cell(i, 11).value
-                temp['part'] = sheet.cell(i, 3).value
-                temp['unbreakable'] = sheet.cell(i, 5).value
-                temp['hides'] = {}
-                temp['hides']['ATTRIBUTES'] = self.__zero_conv(sheet.cell(i, 12).value)
-                temp['hides']['ENCHANTS'] = self.__zero_conv(sheet.cell(i, 13).value)
-                temp['hides']['DESTROYS'] = self.__zero_conv(sheet.cell(i, 14).value)
-                temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
-                temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
-                temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
-                temp['ench'] = []
-                all_items = []
-                for i in range(len(self.__items)):
-                    all_items.append(self.__items[i]['Name'])
-                if temp['Name'] not in all_items:
-                    self.__items.append(temp)
-                else:
-                    item_index = self.__find_index(all_items, temp['Name'])
-                    self.__items[item_index] = temp
-                self.__refreshList()
-                count += 1
-                # except:
-                #     self.__Label_statusText['text'] = '{0} 数据格式不正确'.format(self.__getTime())
-                #     return
+                try:
+                    if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
+                        continue
+                    temp = {}
+                    temp['Name'] = sheet.cell(i, 0).value
+                    if sheet.cell(i, 1).value == '':
+                        temp['id'] = 0
+                    else:
+                        temp['id'] = int(sheet.cell(i, 1).value)
+                    temp['lore'] = sheet.cell(i, 2).value
+                    temp['attributes'] = {}
+                    temp['attributes']['maxHealth'] = sheet.cell(i, 4).value
+                    temp['attributes']['attackDamage'] = sheet.cell(i, 6).value
+                    temp['attributes']['armor'] = sheet.cell(i, 7).value
+                    temp['attributes']['attackSpeed'] = sheet.cell(i, 8).value
+                    temp['attributes']['movementSpeed'] = sheet.cell(i, 9).value
+                    temp['attributes']['armorToughness'] = sheet.cell(i, 10).value
+                    temp['attributes']['knockbackResistance'] = sheet.cell(i, 11).value
+                    temp['part'] = sheet.cell(i, 3).value
+                    temp['unbreakable'] = sheet.cell(i, 5).value
+                    temp['hides'] = {}
+                    temp['hides']['ATTRIBUTES'] = self.__zero_conv(sheet.cell(i, 12).value)
+                    temp['hides']['ENCHANTS'] = self.__zero_conv(sheet.cell(i, 13).value)
+                    temp['hides']['DESTROYS'] = self.__zero_conv(sheet.cell(i, 14).value)
+                    temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
+                    temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
+                    temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
+                    temp['ench'] = []
+                    all_items = []
+                    for i in range(len(self.__items)):
+                        all_items.append(self.__items[i]['Name'])
+                    if temp['Name'] not in all_items:
+                        self.__items.append(temp)
+                    else:
+                        item_index = self.__find_index(all_items, temp['Name'])
+                        self.__items[item_index] = temp
+                    self.__refreshList()
+                    count += 1
+                except:
+                    self.__Label_statusText['text'] = '{0} 数据格式不正确'.format(self.__getTime())
+                    return
             if count != 0:
                 self.__Label_statusText['text'] = '{0} 成功导入文件 {1}'.format(self.__getTime(), file_path)
             else:
