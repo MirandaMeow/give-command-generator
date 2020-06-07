@@ -294,6 +294,7 @@ class GUI():
         self.__enchantment_id_lvl = self.__itemDict['ench']
         self.__refresh_enchantment()
         self.__init_enchantment_window.protocol('WM_DELETE_WINDOW', self.__close_window)
+        self.__enchantmentList.bind("<<TreeviewSelect>>", self.__enchantment_select)
         self.__init_enchantment_window.mainloop()
         self.__open_flag = False
 
@@ -310,6 +311,12 @@ class GUI():
         for i in range(len(listObj)):
             if listObj[i] == target:
                 return i
+
+    def __enchantment_select(self, event):
+        selected = self.__enchantmentList.item(self.__enchantmentList.selection()[0])['values']
+        self.__StringVar_enchantment_name.set(selected[1])
+        self.__StringVar_enchantment_level.set(selected[2])
+
 
     def __conv_id_to_name(self):
         self.__enchantment_name_lvl = []
