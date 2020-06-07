@@ -57,7 +57,7 @@ class GUI():
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
-        self.__title = '指令生成转换器 - Ver 1.7.0.9'
+        self.__title = '指令生成转换器 - Ver 1.7.0.11'
         self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
@@ -347,9 +347,11 @@ class GUI():
             all_enches.append(self.__enchantment_name_lvl[i]['id'])
         if ench_name not in all_enches:
             self.__enchantment_name_lvl.append(enchantment_name_lvl)
+            self.__Label_statusText['text'] = '{0} 添加了一条附魔'.format(self.__getTime())
         else:
             index_ench = self.__find_index(all_enches, ench_name)
             self.__enchantment_name_lvl[index_ench] = enchantment_name_lvl
+            self.__Label_statusText['text'] = '{0} 修改了一条现有的附魔'.format(self.__getTime())
         self.__refresh_enchantment()
 
     def __remove_enchantment(self):
@@ -359,6 +361,7 @@ class GUI():
         selected = self.__selectItem(self.__enchantmentList) - 1
         self.__enchantmentList.delete(select)
         del self.__enchantment_name_lvl[selected]
+        self.__Label_statusText['text'] = '{0} 移除了一条附魔'.format(self.__getTime())
         self.__refresh_enchantment()
 
     def __open_file(self):
@@ -603,6 +606,7 @@ class GUI():
         self.__IntVar_POTION_EFFECTS.set(0)
         self.__IntVar_UNBREAKABLE.set(0)
         self.__enchantment_name_lvl = []
+        self.__enchantment_id_lvl = []
         try:
             self.__clearList(self.__enchantmentList)
         except:
