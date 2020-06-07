@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter import ttk, filedialog, dialog, messagebox
 import re
 import os
-import winreg
 import yaml
 import json
 import xlrd
@@ -53,17 +52,18 @@ class GUI():
         self.__items = []
         self.__datas = []
         self.__yamls = {}
-        self.__itemEnchantment = []
-        self.__ench_converted_to_id = []
+        self.__enchantment_name_lvl = []
+        self.__enchantment_id_lvl = []
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
+        self.__title = '指令生成转换器 - Ver 1.7.0.9'
         self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
 
     def __set_init_window(self):
-        self.__init_window.title("指令生成转换器 - Ver 1.7.0.7")
+        self.__init_window.title(self.__title)
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('600x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
@@ -232,14 +232,13 @@ class GUI():
         self.__Label_statusText.place(x=20, y=470)
 
     def __about(self):
-        messagebox.showinfo("关于", "开发者：MirandaMeow")
         self.__egg += 1
         if self.__egg ==3:
             self.__egg = 0
             self.__init_window.title("指令生成转换器 - OAO")
         else:
-            self.__init_window.title("指令生成转换器 - Ver 1.7.0.7")
-
+            self.__init_window.title(self.__title)
+        messagebox.showinfo("关于", "开发者：MirandaMeow")
 
     def __init_enchantment(self):
         self.__init_window.update()
@@ -292,12 +291,8 @@ class GUI():
         self.__Combobox_enchantment_level['value'] = ench_level
         self.__Combobox_enchantment_level['state'] = 'readonly'
         self.__Combobox_enchantment_level.place(x=80, y=420)
+        self.__enchantment_id_lvl = self.__itemDict['ench']
         self.__refresh_enchantment()
-        self.__itemEnchantment = self.__itemDict['ench']
-        ench_converted_to_name = []
-        for i in range(len(self.__itemEnchantment)):
-            ench_converted_to_name.append({'id': self.__find_key(self.__ench_Conv, self.__itemEnchantment[i]['id']), 'lvl': self.__itemEnchantment[i]['lvl']})
-        self.__itemEnchantment = ench_converted_to_name
         self.__init_enchantment_window.protocol('WM_DELETE_WINDOW', self.__close_window)
         self.__init_enchantment_window.mainloop()
         self.__open_flag = False
@@ -306,30 +301,49 @@ class GUI():
         self.__init_enchantment_window.destroy()
         self.__open_flag = False
 
-    def __find_key(self, dict, target):
-        for i in dict:
-            if dict[i] == target:
+    def __find_key(self, dictObj, target):
+        for i in dictObj:
+            if dictObj[i] == target:
                 return i
+
+    def __find_index(self, listObj, target):
+        for i in range(len(listObj)):
+            if listObj[i] == target:
+                return i
+
+    def __conv_id_to_name(self):
+        self.__enchantment_name_lvl = []
+        for i in range(len(self.__enchantment_id_lvl)):
+            self.__enchantment_name_lvl.append({'id': self.__find_key(self.__ench_Conv, self.__enchantment_id_lvl[i]['id']), 'lvl': self.__enchantment_id_lvl[i]['lvl']})
+
+    def __update_id_list(self):
+        self.__enchantment_id_lvl = []
+        for i in range(len(self.__enchantment_name_lvl)):
+            self.__enchantment_id_lvl.append({'id': self.__ench_Conv[self.__enchantment_name_lvl[i]['id']], 'lvl': self.__enchantment_name_lvl[i]['lvl']})
 
     def __refresh_enchantment(self):
         self.__clearList(self.__enchantmentList)
         count = 0
-        for i in self.__itemEnchantment:
+        for i in self.__enchantment_name_lvl:
             ench_name = i['id']
             ench_level = i['lvl']
             count += 1
             self.__enchantmentList.insert('', END, value=[count, ench_name, ench_level])
+        self.__update_id_list()
 
     def __add_enchantment(self):
         ench_name = self.__StringVar_enchantment_name.get()
         ench_level = self.__StringVar_enchantment_level.get()
-        temp = {'id': ench_name, 'lvl': ench_level}
-        self.__itemEnchantment.append(temp)
+        enchantment_name_lvl = {'id': ench_name, 'lvl': ench_level}
+        all_enches = []
+        for i in range(len(self.__enchantment_name_lvl)):
+            all_enches.append(self.__enchantment_name_lvl[i]['id'])
+        if ench_name not in all_enches:
+            self.__enchantment_name_lvl.append(enchantment_name_lvl)
+        else:
+            index_ench = self.__find_index(all_enches, ench_name)
+            self.__enchantment_name_lvl[index_ench] = enchantment_name_lvl
         self.__refresh_enchantment()
-        temp = self.__itemEnchantment
-        self.__ench_converted_to_id = []
-        for i in range(len(temp)):
-            self.__ench_converted_to_id.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
 
     def __remove_enchantment(self):
         select = self.__enchantmentList.focus()
@@ -337,17 +351,11 @@ class GUI():
             return
         selected = self.__selectItem(self.__enchantmentList) - 1
         self.__enchantmentList.delete(select)
-        del self.__itemEnchantment[selected]
+        del self.__enchantment_name_lvl[selected]
         self.__refresh_enchantment()
-        self.__ench_converted_to_id = self.__itemEnchantment
-
-    def __get_desktop(self):
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders',)
-        return winreg.QueryValueEx(key, "Desktop")[0]
 
     def __open_file(self):
-        desktop = self.__get_desktop()
-        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser(desktop)), filetypes=[('数据文件', '*.json'), ('所有文件', '*')])
+        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser('.')), filetypes=[('数据文件', '*.json'), ('所有文件', '*')])
         if file_path is not '':
             with open(file=file_path, mode='r', encoding='utf-8') as file:
                 try:
@@ -356,7 +364,15 @@ class GUI():
                         if fileJson[i]['part'] not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or fileJson[i]['unbreakable'] not in ["是", "否"]:
                             self.__Label_statusText['text'] = '{0} 数据格式不正确'.format(self.__getTime())
                             return
-                    self.__items += fileJson
+                    all_items = []
+                    for i in range(len(self.__items)):
+                        all_items.append(self.__items[i]['Name'])
+                    for i in range(len(fileJson)):
+                        if fileJson[i]['Name'] not in all_items:
+                            self.__items.append(fileJson[i])
+                        else:
+                            item_index = self.__find_index(all_items, fileJson[i]['Name'])
+                            self.__items[item_index] = fileJson[i]
                 except:
                     self.__Label_statusText['text'] = '{0} 打开文件 {1} 时发生错误'.format(self.__getTime(), file_path)
                     return
@@ -364,8 +380,7 @@ class GUI():
                 self.__refreshList()
 
     def __open_file_excel(self):
-        desktop = self.__get_desktop()
-        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser(desktop)), filetypes=[('Excel 工作簿', '*.xlsx'), ('Excel 97-2003 工工作簿', '*.xls'), ('所有文件', '*')])
+        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser('.')), filetypes=[('Excel 工作簿', '*.xlsx'), ('Excel 97-2003 工工作簿', '*.xls'), ('所有文件', '*')])
         if file_path is not '':
             try:
                 table = xlrd.open_workbook(file_path)
@@ -375,40 +390,47 @@ class GUI():
                 return
             count = 0
             for i in range(sheet.nrows):
-                try:
-                    if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
-                        continue
-                    temp = {}
-                    temp['Name'] = sheet.cell(i, 0).value
-                    if sheet.cell(i, 1).value == '':
-                        temp['id'] = 0
-                    else:
-                        temp['id'] = int(sheet.cell(i, 1).value)
-                    temp['lore'] = sheet.cell(i, 2).value
-                    temp['attributes'] = {}
-                    temp['attributes']['maxHealth'] = sheet.cell(i, 4).value
-                    temp['attributes']['attackDamage'] = sheet.cell(i, 6).value
-                    temp['attributes']['armor'] = sheet.cell(i, 7).value
-                    temp['attributes']['attackSpeed'] = sheet.cell(i, 8).value
-                    temp['attributes']['movementSpeed'] = sheet.cell(i, 9).value
-                    temp['attributes']['armorToughness'] = sheet.cell(i, 10).value
-                    temp['attributes']['knockbackResistance'] = sheet.cell(i, 11).value
-                    temp['part'] = sheet.cell(i, 3).value
-                    temp['unbreakable'] = sheet.cell(i, 5).value
-                    temp['hides'] = {}
-                    temp['hides']['ATTRIBUTES'] = self.__zero_conv(sheet.cell(i, 12).value)
-                    temp['hides']['ENCHANTS'] = self.__zero_conv(sheet.cell(i, 13).value)
-                    temp['hides']['DESTROYS'] = self.__zero_conv(sheet.cell(i, 14).value)
-                    temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
-                    temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
-                    temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
-                    temp['ench'] = []
+                # try:
+                if sheet.cell(i, 3).value not in ["头盔", "胸甲", "腿甲", "靴子", "主手", "副手"] or sheet.cell(i, 5).value not in ["是", "否"]:
+                    continue
+                temp = {}
+                temp['Name'] = sheet.cell(i, 0).value
+                if sheet.cell(i, 1).value == '':
+                    temp['id'] = 0
+                else:
+                    temp['id'] = int(sheet.cell(i, 1).value)
+                temp['lore'] = sheet.cell(i, 2).value
+                temp['attributes'] = {}
+                temp['attributes']['maxHealth'] = sheet.cell(i, 4).value
+                temp['attributes']['attackDamage'] = sheet.cell(i, 6).value
+                temp['attributes']['armor'] = sheet.cell(i, 7).value
+                temp['attributes']['attackSpeed'] = sheet.cell(i, 8).value
+                temp['attributes']['movementSpeed'] = sheet.cell(i, 9).value
+                temp['attributes']['armorToughness'] = sheet.cell(i, 10).value
+                temp['attributes']['knockbackResistance'] = sheet.cell(i, 11).value
+                temp['part'] = sheet.cell(i, 3).value
+                temp['unbreakable'] = sheet.cell(i, 5).value
+                temp['hides'] = {}
+                temp['hides']['ATTRIBUTES'] = self.__zero_conv(sheet.cell(i, 12).value)
+                temp['hides']['ENCHANTS'] = self.__zero_conv(sheet.cell(i, 13).value)
+                temp['hides']['DESTROYS'] = self.__zero_conv(sheet.cell(i, 14).value)
+                temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
+                temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
+                temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
+                temp['ench'] = []
+                all_items = []
+                for i in range(len(self.__items)):
+                    all_items.append(self.__items[i]['Name'])
+                if temp['Name'] not in all_items:
                     self.__items.append(temp)
-                    self.__refreshList()
-                    count += 1
-                except:
-                    self.__Label_statusText['text'] = '{0} 数据格式不正确'.format(self.__getTime())
-                    return
+                else:
+                    item_index = self.__find_index(all_items, temp['Name'])
+                    self.__items[item_index] = temp
+                self.__refreshList()
+                count += 1
+                # except:
+                #     self.__Label_statusText['text'] = '{0} 数据格式不正确'.format(self.__getTime())
+                #     return
             if count != 0:
                 self.__Label_statusText['text'] = '{0} 成功导入文件 {1}'.format(self.__getTime(), file_path)
             else:
@@ -490,12 +512,23 @@ class GUI():
         temp['hides']['PLACED_ON'] = self.__IntVar_PLACED_ON.get()
         temp['hides']['POTION_EFFECTS'] = self.__IntVar_POTION_EFFECTS.get()
         temp['hides']['UNBREAKABLE'] = self.__IntVar_UNBREAKABLE.get()
-        temp['ench'] = self.__itemEnchantment
-        self.__items.append(temp)
+        try:
+            temp['ench'] = self.__enchantment_id_lvl
+        except:
+            temp['ench'] = []
+        all_items = []
+        for i in range(len(self.__items)):
+            all_items.append(self.__items[i]['Name'])
+        if temp['Name'] not in all_items:
+            self.__items.append(temp)
+            self.__Label_statusText['text'] = '{0} 物品信息已保存至列表，指令已复制到剪切板'.format(self.__getTime())
+        else:
+            self.__Label_statusText['text'] = '{0} 列表中的物品已经更新，指令已复制到剪切板'.format(self.__getTime())
+            item_index = self.__find_index(all_items, temp['Name'])
+            self.__items[item_index] = temp
         self.__refreshList()
         self.__setText(self.__generate())
-        self.__Label_statusText['text'] = '{0} 物品信息已保存至列表，指令已复制到剪切板'.format(self.__getTime())
-
+        
     def __delete_Select(self):
         select = self.__itemList.focus()
         if select == '' or None:
@@ -533,15 +566,13 @@ class GUI():
         self.__IntVar_PLACED_ON.set(temp['hides']['PLACED_ON'])
         self.__IntVar_POTION_EFFECTS.set(temp['hides']['POTION_EFFECTS'])
         self.__IntVar_UNBREAKABLE.set(temp['hides']['UNBREAKABLE'])
-        self.__itemEnchantment = temp['ench']
-        temp = self.__itemEnchantment
-        self.__ench_converted_to_id = []
+        self.__enchantment_id_lvl = temp['ench']
+        self.__conv_id_to_name()
         try:
             self.__refresh_enchantment()
         except:
             None
-        for i in range(len(temp)):
-            self.__ench_converted_to_id.append({'id': self.__ench_Conv[temp[i]['id']], 'lvl': temp[i]['lvl']})
+
         self.__setText(self.__generate())
         self.__Label_statusText['text'] = '{0} 已从列表载入物品信息，指令已复制到剪切板'.format(self.__getTime())
 
@@ -564,7 +595,7 @@ class GUI():
         self.__IntVar_PLACED_ON.set(0)
         self.__IntVar_POTION_EFFECTS.set(0)
         self.__IntVar_UNBREAKABLE.set(0)
-        self.__itemEnchantment = []
+        self.__enchantment_name_lvl = []
         try:
             self.__clearList(self.__enchantmentList)
         except:
@@ -608,7 +639,7 @@ class GUI():
             self.__StringVar_knockbackResistance.set(temp['attributes']['knockbackResistance'])
             self.__StringVar_part.set(temp['part'])
             self.__StringVar_unbreakable.set(temp['unbreakable'])
-            self.__itemEnchantment = temp['ench']
+            self.__enchantment_name_lvl = temp['ench']
             tempData = self.__generate()
             self.__datas.append(tempData)
         self.__Text_showData.delete(1.0, END)
@@ -638,7 +669,7 @@ class GUI():
             currentItem['Enchantments'] = []
             ench = temp['ench']
             for i in range(len(ench)):
-                currentItem['Enchantments'].append('{0}:{1}'.format(self.__ench_Conv[ench[i]['id']], ench[i]['lvl']))
+                currentItem['Enchantments'].append('{0}:{1}'.format(ench[i]['id'], ench[i]['lvl']))
             selectedHides = temp['hides']
             hides = []
             for i in selectedHides:
@@ -713,7 +744,7 @@ class GUI():
         self.__handle_data(self.__StringVar_movementSpeed.get(), 'generic.movementSpeed')
         self.__handle_data(self.__StringVar_armorToughness.get(), 'generic.armorToughness')
         self.__handle_data(self.__StringVar_knockbackResistance.get(), 'generic.knockbackResistance')
-        self.__itemDict['ench'] = self.__ench_converted_to_id
+        self.__itemDict['ench'] = self.__enchantment_id_lvl
 
         data = str(self.__itemDict)
         exp = "'([0-9a-zA-Z]+)': "
