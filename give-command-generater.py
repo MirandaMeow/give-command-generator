@@ -57,7 +57,7 @@ class GUI():
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
-        self.__title = '指令生成转换器 - Ver 1.7.0.11'
+        self.__title = '指令生成转换器 - Ver 1.7.0.12'
         self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
@@ -124,7 +124,7 @@ class GUI():
         self.__Combobox_part['state'] = 'readonly'
         self.__Combobox_part.place(x=70, y=80, relwidth=0.083)
 
-        self.__Button_enchantment = Button(self.__init_window, text='附魔设置', command=self.__init_enchantment)
+        self.__Button_enchantment = Button(self.__init_window, text='附魔设置', command=self.__init_enchantment, relief=GROOVE)
         self.__Button_enchantment.place(x=148, y=80, height=23, width=112)
 
         self.__Label_maxHealth = Label(self.__init_window, text='生命值：')
@@ -185,16 +185,16 @@ class GUI():
         self.__Entry_knockbackResistance = Entry(self.__init_window, textvariable=self.__StringVar_knockbackResistance)
         self.__Entry_knockbackResistance.place(x=210, y=200, width=50)
 
-        self.__Button_save = Button(self.__init_window, text="-->", command=self.__save_to_list, width=6)
+        self.__Button_save = Button(self.__init_window, text="-->", command=self.__save_to_list, width=6, relief=GROOVE)
         self.__Button_save.place(x=280, y=40)
 
-        self.__Button_delete = Button(self.__init_window, text="删除", command=self.__delete_Select, width=6)
+        self.__Button_delete = Button(self.__init_window, text="删除", command=self.__delete_Select, width=6, relief=GROOVE)
         self.__Button_delete.place(x=280, y=110)
 
-        self.__Button_load = Button(self.__init_window, text="<--", command=self.__load_from_list, width=6)
+        self.__Button_load = Button(self.__init_window, text="<--", command=self.__load_from_list, width=6, relief=GROOVE)
         self.__Button_load.place(x=280, y=180)
 
-        self.__Button_reset = Button(self.__init_window, text="重置", command=self.__reset, width=6)
+        self.__Button_reset = Button(self.__init_window, text="重置", command=self.__reset, width=6, relief=GROOVE)
         self.__Button_reset.place(x=280, y=250)
 
         self.__Text_showData = Text(self.__init_window, height=10, width=77)
@@ -265,10 +265,10 @@ class GUI():
         self.__enchantmentList.heading("等级", text="等级")
         self.__enchantmentList.place(x=2, y=2)
 
-        self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="+", command=self.__add_enchantment, width=6)
+        self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="+", command=self.__add_enchantment, width=6, relief=GROOVE)
         self.__Button_add_enchantment.place(x=40, y=340)
 
-        self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="-", command=self.__remove_enchantment, width=6)
+        self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="-", command=self.__remove_enchantment, width=6, relief=GROOVE)
         self.__Button_add_enchantment.place(x=155, y=340)
 
         self.__Label_enchantment_name = Label(self.__init_enchantment_window, text='附魔名称：')
