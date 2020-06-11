@@ -57,7 +57,7 @@ class GUI():
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
-        self.__title = '指令生成转换器 - Ver 1.7.0.12'
+        self.__title = '指令生成转换器 - Ver 1.8.1'
         self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
@@ -504,6 +504,10 @@ class GUI():
         temp = {}
         temp['Name'] = self.__StringVar_name.get()
         temp['id'] = self.__StringVar_id.get()
+        temp_id_data = temp['id'].split(':')
+        if len(temp_id_data) == 2:
+            if temp_id_data[1].isdigit() == False:
+                temp['id'] = temp_id_data[0]
         temp['lore'] = self.__StringVar_lore.get()
         temp['attributes'] = {}
         temp['attributes']['maxHealth'] = self.__StringVar_maxHealth.get()
@@ -668,11 +672,17 @@ class GUI():
         for temp in self.__items:
             self.__yamls[temp['Name']] = {}
             currentItem = self.__yamls[temp['Name']]
-            if temp['id'] == '':
-                currentItem['Id'] = 0
+            id_data = temp['id'].split(':')
+            if len(id_data) == 1:
+                if id_data[0] == '':
+                    currentItem['Id'] = 0
+                    currentItem['Data'] = 0
+                else:
+                    currentItem['Id'] = int(id_data[0])
+                    currentItem['Data'] = 0
             else:
-                currentItem['Id'] = int(temp['id'])
-            currentItem['Data'] = 0
+                currentItem['Id'] = int(id_data[0])
+                currentItem['Data'] = int(id_data[1])
             currentItem['Display'] = temp['Name']
             currentItem['Lore'] = temp['lore'].split(';')
             currentItem['Attributes'] = {}
@@ -767,11 +777,21 @@ class GUI():
         data = data.replace("'feet'", 'feet')
         data = data.replace("'", "\"")
         try:
-            set_id = int(self.__Entry_id.get())
+            id_data = self.__Entry_id.get().split(':')
+            set_id = int(id_data[0])
         except:
             self.__StringVar_id.set('0')
             set_id = 0
-        data = '/give @p {0} 1 '.format(set_id) + data
+        if len(id_data) == 1:
+            data = '/give @p {0} 1 '.format(set_id) + data
+        else:
+            try:
+                set_data = int(id_data[1])
+                data = '/give @p {0}:{1} 1 '.format(set_id, set_data) + data
+            except:
+                self.__StringVar_id.set(set_id)
+                set_data = 0
+                data = '/give @p {0} 1 '.format(set_id) + data
         self.__Text_showData.delete(1.0, END)
         self.__Text_showData.insert('insert', data)
         return data
