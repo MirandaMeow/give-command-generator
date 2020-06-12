@@ -57,7 +57,7 @@ class GUI():
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
-        self.__title = '指令生成转换器 - Ver 1.8.1'
+        self.__title = '指令生成转换器 - Ver 1.8.2'
         self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
@@ -231,32 +231,23 @@ class GUI():
         self.__Label_statusText = Label(self.__init_window, text='{0} 程序初始化完成'.format(self.__getTime()))
         self.__Label_statusText.place(x=20, y=470)
 
-    def __about(self):
-        self.__egg += 1
-        if self.__egg ==3:
-            self.__egg = 0
-            self.__init_window.title("指令生成转换器 - OAO")
-        else:
-            self.__init_window.title(self.__title)
-        messagebox.showinfo("关于", "开发者：MirandaMeow")
-
     def __init_enchantment(self):
-        self.__init_window.update()
-        main_x, main_y = self.__init_window.winfo_x(), self.__init_window.winfo_y()
         if self.__open_flag == True:
             self.__init_enchantment_window.destroy()
             self.__open_flag = False
             return
+        self.__init_window.update()
+        main_x, main_y = self.__init_window.winfo_x(), self.__init_window.winfo_y()
         self.__open_flag = True
         self.__init_enchantment_window = Toplevel()
         self.__init_enchantment_window.title('附魔设置')
         self.__init_enchantment_window.resizable(0, 0)
         if main_x < self.__init_window.winfo_screenwidth() - 600 - 250:
-            self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(main_x + 600, main_y))
+            self.__init_enchantment_window.geometry('250x520+{0}+{1}'.format(main_x + 600, main_y))
         else:
-            self.__init_enchantment_window.geometry('250x460+{0}+{1}'.format(main_x - 250, main_y))
+            self.__init_enchantment_window.geometry('250x520+{0}+{1}'.format(main_x - 250, main_y))
 
-        self.__enchantmentList = ttk.Treeview(self.__init_enchantment_window, columns=["序号", "附魔名称", "等级"], show='headings', selectmode="browse", height=15)
+        self.__enchantmentList = ttk.Treeview(self.__init_enchantment_window, columns=["序号", "附魔名称", "等级"], show='headings', selectmode="browse", height=17)
         self.__enchantmentList.column("序号", width=50)
         self.__enchantmentList.column("附魔名称", width=110)
         self.__enchantmentList.column("等级", width=83)
@@ -266,22 +257,22 @@ class GUI():
         self.__enchantmentList.place(x=2, y=2)
 
         self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="+", command=self.__add_enchantment, width=6, relief=GROOVE)
-        self.__Button_add_enchantment.place(x=40, y=340)
+        self.__Button_add_enchantment.place(x=40, y=390)
 
         self.__Button_add_enchantment = Button(self.__init_enchantment_window, text="-", command=self.__remove_enchantment, width=6, relief=GROOVE)
-        self.__Button_add_enchantment.place(x=155, y=340)
+        self.__Button_add_enchantment.place(x=155, y=390)
 
         self.__Label_enchantment_name = Label(self.__init_enchantment_window, text='附魔名称：')
-        self.__Label_enchantment_name.place(x=20, y=380)
+        self.__Label_enchantment_name.place(x=30, y=440)
         self.__StringVar_enchantment_name = StringVar()
         self.__StringVar_enchantment_name.set("保护")
         self.__Combobox_enchantment_name = ttk.Combobox(self.__init_enchantment_window, textvariable=self.__StringVar_enchantment_name, width=12)
         self.__Combobox_enchantment_name['value'] = ('保护', '火焰保护', '摔落保护', '爆炸保护', '弹射物保护', '水下呼吸', '水下速掘', '荆棘', '深海探索者', '绑定诅咒', '锋利', '亡灵杀手', '节肢杀手', '击退', '火焰附加', '抢夺', '效率', '精准采集', '耐久', '时运', '力量', '冲击', '火矢', '无限', '海之眷顾', '饵钓', '经验修补', '消失诅咒')
         self.__Combobox_enchantment_name['state'] = 'readonly'
-        self.__Combobox_enchantment_name.place(x=80, y=380)
+        self.__Combobox_enchantment_name.place(x=110, y=440)
 
         self.__Label_enchantment_level = Label(self.__init_enchantment_window, text='附魔等级：')
-        self.__Label_enchantment_level.place(x=20, y=420)
+        self.__Label_enchantment_level.place(x=30, y=480)
         self.__StringVar_enchantment_level = IntVar()
         self.__StringVar_enchantment_level.set("1")
         self.__Combobox_enchantment_level = ttk.Combobox(self.__init_enchantment_window, textvariable=self.__StringVar_enchantment_level, width=12)
@@ -290,13 +281,22 @@ class GUI():
             ench_level.append(i)
         self.__Combobox_enchantment_level['value'] = ench_level
         self.__Combobox_enchantment_level['state'] = 'readonly'
-        self.__Combobox_enchantment_level.place(x=80, y=420)
+        self.__Combobox_enchantment_level.place(x=110, y=480)
         self.__enchantment_id_lvl = self.__itemDict['ench']
         self.__refresh_enchantment()
         self.__init_enchantment_window.protocol('WM_DELETE_WINDOW', self.__close_window)
         self.__enchantmentList.bind("<<TreeviewSelect>>", self.__enchantment_select)
         self.__init_enchantment_window.mainloop()
         self.__open_flag = False
+
+    def __about(self):
+        self.__egg += 1
+        if self.__egg ==3:
+            self.__egg = 0
+            self.__init_window.title("指令生成转换器 - OAO")
+        else:
+            self.__init_window.title(self.__title)
+        messagebox.showinfo("关于", "开发者：MirandaMeow")
 
     def __close_window(self):
         self.__init_enchantment_window.destroy()
@@ -316,7 +316,6 @@ class GUI():
         selected = self.__enchantmentList.item(self.__enchantmentList.selection()[0])['values']
         self.__StringVar_enchantment_name.set(selected[1])
         self.__StringVar_enchantment_level.set(selected[2])
-
 
     def __conv_id_to_name(self):
         self.__enchantment_name_lvl = []
@@ -357,6 +356,7 @@ class GUI():
     def __remove_enchantment(self):
         select = self.__enchantmentList.focus()
         if select == '' or None:
+            self.__Label_statusText['text'] = '{0} 没有选择附魔'.format(self.__getTime())
             return
         selected = self.__selectItem(self.__enchantmentList) - 1
         self.__enchantmentList.delete(select)
@@ -508,6 +508,11 @@ class GUI():
         if len(temp_id_data) == 2:
             if temp_id_data[1].isdigit() == False:
                 temp['id'] = temp_id_data[0]
+                self.__StringVar_id.set(temp_id_data[0])
+        else:
+            if temp_id_data[0].isdigit() == False:
+                temp['id'] = 0
+                self.__StringVar_id.set('0')
         temp['lore'] = self.__StringVar_lore.get()
         temp['attributes'] = {}
         temp['attributes']['maxHealth'] = self.__StringVar_maxHealth.get()
@@ -613,6 +618,8 @@ class GUI():
         self.__enchantment_id_lvl = []
         try:
             self.__clearList(self.__enchantmentList)
+            self.__StringVar_enchantment_name.set("保护")
+            self.__StringVar_enchantment_level.set("1")
         except:
             return
 
@@ -776,22 +783,13 @@ class GUI():
         data = data.replace("'legs'", 'legs')
         data = data.replace("'feet'", 'feet')
         data = data.replace("'", "\"")
-        try:
-            id_data = self.__Entry_id.get().split(':')
-            set_id = int(id_data[0])
-        except:
-            self.__StringVar_id.set('0')
-            set_id = 0
+        id_data = self.__Entry_id.get().split(':')
+        set_id = int(id_data[0])
         if len(id_data) == 1:
             data = '/give @p {0} 1 '.format(set_id) + data
         else:
-            try:
-                set_data = int(id_data[1])
-                data = '/give @p {0}:{1} 1 '.format(set_id, set_data) + data
-            except:
-                self.__StringVar_id.set(set_id)
-                set_data = 0
-                data = '/give @p {0} 1 '.format(set_id) + data
+            set_data = int(id_data[1])
+            data = '/give @p {0}:{1} 1 '.format(set_id, set_data) + data
         self.__Text_showData.delete(1.0, END)
         self.__Text_showData.insert('insert', data)
         return data
