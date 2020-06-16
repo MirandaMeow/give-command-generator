@@ -57,7 +57,7 @@ class GUI():
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
-        self.__title = '指令生成转换器 - Ver 1.8.2'
+        self.__title = '指令生成转换器 - Ver 1.8.3'
         self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
         self.__set_init_window()
         self.__init_window.mainloop()
@@ -101,7 +101,7 @@ class GUI():
         self.__Entry_name = Entry(self.__init_window, textvariable=self.__StringVar_name)
         self.__Entry_name.place(x=70, y=20, width=90)
 
-        self.__Label_id = Label(self.__init_window, text='id：')
+        self.__Label_id = Label(self.__init_window, text='ID：')
         self.__Label_id.place(x=175, y=20)
         self.__StringVar_id = StringVar()
         self.__StringVar_id.set('')
@@ -134,7 +134,7 @@ class GUI():
         self.__Entry_maxHealth = Entry(self.__init_window, textvariable=self.__StringVar_maxHealth)
         self.__Entry_maxHealth.place(x=70, y=110, width=50)
 
-        self.__Label_unbreakable = Label(self.__init_window, text='不可破坏：')
+        self.__Label_unbreakable = Label(self.__init_window, text='无法破坏：')
         self.__Label_unbreakable.place(x=145, y=110)
         self.__StringVar_unbreakable = StringVar()
         self.__StringVar_unbreakable.set("否")
@@ -296,7 +296,10 @@ class GUI():
             self.__init_window.title("指令生成转换器 - OAO")
         else:
             self.__init_window.title(self.__title)
-        messagebox.showinfo("关于", "开发者：MirandaMeow")
+        about_text = '''
+        开发者：MirandaMeow
+        '''
+        messagebox.showinfo("关于", about_text)
 
     def __close_window(self):
         self.__init_enchantment_window.destroy()
