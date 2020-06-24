@@ -36,18 +36,6 @@
   - 看起来挺合身
   - 但实际上似乎有的地方线头没剪掉
   - 有点戳人
-坚不可摧的鞘翅:
-  Attributes:
-    head: {}
-  Data: 0
-  Display: 坚不可摧的鞘翅
-  Enchantments: []
-  Hide: []
-  Id: 443
-  Lore:
-  - ''
-  Options:
-    Unbreakable: true
 安酱的帽子:
   Attributes:
     head:

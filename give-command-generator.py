@@ -67,6 +67,7 @@ class GUI():
         x, y = self.__init_window.winfo_screenwidth(), self.__init_window.winfo_screenheight()
         self.__init_window.geometry('600x500+{0}+{1}'.format(int(x / 3), int(y / 4)))
         self.__init_window.resizable(0, 0)
+        # self.__init_window.attributes("-alpha", 0.6)
         self.__Menu_menu = Menu(self.__init_window)
         self.__Menu_subMenu_file = Menu(self.__init_window, tearoff=False)
         self.__Menu_subMenu_file.add_command(label="打开", command=self.__open_file)
