@@ -1,0 +1,65 @@
+乡长的工作服:
+  Attributes:
+    chest:
+      armor: -5.0
+      attackDamage: -5.0
+      attackSpeed: -0.3
+      maxHealth: 5.0
+      movementSpeed: -0.25
+  Data: 0
+  Display: 乡长的工作服
+  Enchantments:
+  - '34:1'
+  - '32:1'
+  Hide: []
+  Id: 303
+  Lore:
+  - 看起来挺合身
+  - 但实际上似乎有的地方线头没剪掉
+  - 有点戳人
+兔子的工作服:
+  Attributes:
+    chest:
+      armor: -5.0
+      attackDamage: -5.0
+      attackSpeed: -0.3
+      maxHealth: 5.0
+      movementSpeed: -0.25
+  Data: 0
+  Display: 兔子的工作服
+  Enchantments:
+  - '34:1'
+  - '32:1'
+  Hide: []
+  Id: 303
+  Lore:
+  - 看起来挺合身
+  - 但实际上似乎有的地方线头没剪掉
+  - 有点戳人
+坚不可摧的鞘翅:
+  Attributes:
+    head: {}
+  Data: 0
+  Display: 坚不可摧的鞘翅
+  Enchantments: []
+  Hide: []
+  Id: 443
+  Lore:
+  - ''
+  Options:
+    Unbreakable: true
+安酱的帽子:
+  Attributes:
+    head:
+      armorToughness: 0.05
+  Data: 0
+  Display: 安酱的帽子
+  Enchantments:
+  - 0:4
+  Hide: []
+  Id: 310
+  Lore:
+  - 一顶鸭舌帽
+  - 安酱很喜欢戴着它去种树苗
+  Options:
+    Unbreakable: true
