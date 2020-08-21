@@ -827,7 +827,7 @@ class GUI():
         data = data.replace("text", "\"text\"")
         data = data.replace("italic", "\"italic\"")
         set_id = self.__Entry_id.get()
-        data = '/give @p {0} 1 '.format(set_id) + data
+        data = '/minecraft:give @p {0}{1} 1 '.format(set_id, data)
         self.__Text_showData.delete(1.0, END)
         self.__Text_showData.insert('insert', data)
         return data
