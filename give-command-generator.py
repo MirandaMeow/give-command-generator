@@ -151,11 +151,11 @@ class GUI():
         self.__Entry_name.place(x=70, y=20, width=70)
 
         self.__Label_id = Label(self.__init_window, text='ID：')
-        self.__Label_id.place(x=155, y=20)
+        self.__Label_id.place(x=145, y=20)
         self.__StringVar_id = StringVar()
         self.__StringVar_id.set('')
         self.__Entry_id = Entry(self.__init_window, textvariable=self.__StringVar_id)
-        self.__Entry_id.place(x=180, y=20, width=80)
+        self.__Entry_id.place(x=170, y=20, width=90)
 
         self.__Label_lore = Label(self.__init_window, text='说明：')
         self.__Label_lore.place(x=20, y=50)
