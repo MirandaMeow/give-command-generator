@@ -20,34 +20,83 @@ class GUI():
             '副手': 'offhand'
         }
         self.__ench_Conv = {
-        '保护': 0,
-        '火焰保护': 1,
-        '摔落保护': 2,
-        '爆炸保护': 3,
-        '弹射物保护': 4,
-        '水下呼吸': 5,
-        '水下速掘': 6,
-        '荆棘': 7,
-        '深海探索者': 8,
-        '绑定诅咒': 10,
-        '锋利': 16,
-        '亡灵杀手': 17,
-        '节肢杀手': 18,
-        '击退': 19,
-        '火焰附加': 20,
-        '抢夺': 21,
-        '效率': 32,
-        '精准采集': 33,
-        '耐久': 34,
-        '时运': 35,
-        '力量': 48,
-        '冲击': 49,
-        '火矢': 50,
-        '无限': 51,
-        '海之眷顾': 61,
-        '饵钓': 62,
-        '经验修补': 70,
-        '消失诅咒': 71
+        "保护": "protection",
+        "火焰保护": "fire_protection",
+        "摔落保护": "feather_falling",
+        "爆炸保护": "blast_protection",
+        "弹射物保护": "projectile_protection",
+        "水下呼吸": "respiration",
+        "水下速掘": "aqua_affinity",
+        "荆棘": "thorns",
+        "深海探索者": "depth_strider",
+        "冰霜行者": "frost_walker",
+        "绑定诅咒": "binding_curse",
+        "锋利": "sharpness",
+        "亡灵杀手": "smite",
+        "节肢杀手": "bane_of_arthropods",
+        "击退": "knockback",
+        "火焰附加": "fire_aspect",
+        "抢夺": "looting",
+        "横扫之刃": "sweeping",
+        "效率": "efficiency",
+        "精准采集": "silk_touch",
+        "耐久": "unbreaking",
+        "时运": "fortune",
+        "力量": "power",
+        "冲击": "punch",
+        "火矢": "flame",
+        "无限": "infinity",
+        "穿刺": "impaling",
+        '引雷': "channeling",
+        "忠诚": "loyalty",
+        "多重射击": "multishot",
+        "穿透": "piercing",
+        "激流": "riptide",
+        "快速装填": "quick_charge",
+        "海之眷顾": "luck_of_the_sea",
+        "饵钓": "lure",
+        "经验修补": "mending",
+        "消失诅咒": "vanishing_curse"
+        }
+        self.__ench_Conv_mm = {
+        'power': 'ARROW_DAMAGE',
+        'flame': 'ARROW_FIRE',
+        'infinity': 'ARROW_INFINITE',
+        'punch': 'ARROW_KNOCKBACK',
+        'binding_curse': 'BINDING_CURSE',
+        'channeling': 'CHANNELING',
+        'sharpness': 'DAMAGE_ALL',
+        'bane_of_arthropods': 'DAMAGE_ARTHROPODS',
+        'smite': 'DAMAGE_UNDEAD',
+        'depth_strider': 'DEPTH_STRIDER',
+        'efficiency': 'DIG_SPEED',
+        'unbreaking': 'DURABILITY',
+        'fire_aspect': 'FIRE_ASPECT',
+        'frost_walker': 'FROST_WALKER',
+        'impaling': 'IMPALING',
+        'knockback': 'KNOCKBACK',
+        'fortune': 'LOOT_BONUS_BLOCKS',
+        'looting': 'LOOT_BONUS_MOBS',
+        'loyalty': 'LOYALTY',
+        'luck_of_the_sea': 'LUCK',
+        'lure': 'LURE',
+        'mending': 'MENDING',
+        'multishot': 'MULTSHOT',
+        'respiration': 'OXYGEN',
+        'piercing': 'PIERCING',
+        'protection': 'PROTECTION_ENVIRONMENTAL',
+        'blast_protection': 'PROTECTION_EXPLOSIONS',
+        'feather_falling': 'PROTECTION_FALL',
+        'fire_protection': 'PROTECTION_FIRE',
+        'projectile_protection': 'PROTECTION_PROJECTILE',
+        'quick_charge': 'QUICK_CHARGE',
+        'riptide': 'RIPTIDE',
+        'silk_touch': 'SILK_TOUCH',
+        'Soul_speed': 'SOUL_SPEED', ### 1.16
+        'sweeping': 'SWEEPING_EDGE',
+        'thorns': 'THORNS',
+        'vanishing_curse': 'VANISHING_CURSE',
+        'aqua_affinity': 'WATER_WORKER'
         }
         self.__items = []
         self.__datas = []
@@ -57,8 +106,8 @@ class GUI():
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
-        self.__title = '指令生成转换器 - Ver 1.8.4'
-        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
+        self.__title = '指令生成转换器 - Ver 1.8.5'
+        self.__itemDict = {'display': {'Name': [], 'Lore': []}, 'AttributeModifiers': [], 'Enchantments': []}
         self.__set_init_window()
         self.__init_window.mainloop()
 
@@ -267,7 +316,7 @@ class GUI():
         self.__StringVar_enchantment_name = StringVar()
         self.__StringVar_enchantment_name.set("保护")
         self.__Combobox_enchantment_name = ttk.Combobox(self.__init_enchantment_window, textvariable=self.__StringVar_enchantment_name, width=12)
-        self.__Combobox_enchantment_name['value'] = ('保护', '火焰保护', '摔落保护', '爆炸保护', '弹射物保护', '水下呼吸', '水下速掘', '荆棘', '深海探索者', '绑定诅咒', '锋利', '亡灵杀手', '节肢杀手', '击退', '火焰附加', '抢夺', '效率', '精准采集', '耐久', '时运', '力量', '冲击', '火矢', '无限', '海之眷顾', '饵钓', '经验修补', '消失诅咒')
+        self.__Combobox_enchantment_name['value'] = tuple(self.__ench_Conv.keys())
         self.__Combobox_enchantment_name['state'] = 'readonly'
         self.__Combobox_enchantment_name.place(x=110, y=440)
 
@@ -282,7 +331,7 @@ class GUI():
         self.__Combobox_enchantment_level['value'] = ench_level
         self.__Combobox_enchantment_level['state'] = 'readonly'
         self.__Combobox_enchantment_level.place(x=110, y=480)
-        self.__enchantment_id_lvl = self.__itemDict['ench']
+        self.__enchantment_id_lvl = self.__itemDict['Enchantments']
         self.__refresh_enchantment()
         self.__init_enchantment_window.protocol('WM_DELETE_WINDOW', self.__close_window)
         self.__enchantmentList.bind("<<TreeviewSelect>>", self.__enchantment_select)
@@ -408,10 +457,7 @@ class GUI():
                         continue
                     temp = {}
                     temp['Name'] = sheet.cell(i, 0).value
-                    if sheet.cell(i, 1).value == '':
-                        temp['id'] = 0
-                    else:
-                        temp['id'] = int(sheet.cell(i, 1).value)
+                    temp['id'] = sheet.cell(i, 1).value
                     temp['lore'] = sheet.cell(i, 2).value
                     temp['attributes'] = {}
                     temp['attributes']['maxHealth'] = sheet.cell(i, 4).value
@@ -430,7 +476,7 @@ class GUI():
                     temp['hides']['PLACED_ON'] = self.__zero_conv(sheet.cell(i, 15).value)
                     temp['hides']['POTION_EFFECTS'] = self.__zero_conv(sheet.cell(i, 16).value)
                     temp['hides']['UNBREAKABLE'] = self.__zero_conv(sheet.cell(i, 17).value)
-                    temp['ench'] = []
+                    temp['Enchantment'] = []
                     all_items = []
                     for i in range(len(self.__items)):
                         all_items.append(self.__items[i]['Name'])
@@ -507,15 +553,6 @@ class GUI():
         temp = {}
         temp['Name'] = self.__StringVar_name.get()
         temp['id'] = self.__StringVar_id.get()
-        temp_id_data = temp['id'].split(':')
-        if len(temp_id_data) == 2:
-            if temp_id_data[1].isdigit() == False:
-                temp['id'] = temp_id_data[0]
-                self.__StringVar_id.set(temp_id_data[0])
-        else:
-            if temp_id_data[0].isdigit() == False:
-                temp['id'] = 0
-                self.__StringVar_id.set('0')
         temp['lore'] = self.__StringVar_lore.get()
         temp['attributes'] = {}
         temp['attributes']['maxHealth'] = self.__StringVar_maxHealth.get()
@@ -535,9 +572,9 @@ class GUI():
         temp['hides']['POTION_EFFECTS'] = self.__IntVar_POTION_EFFECTS.get()
         temp['hides']['UNBREAKABLE'] = self.__IntVar_UNBREAKABLE.get()
         try:
-            temp['ench'] = self.__enchantment_id_lvl
+            temp['Enchantment'] = self.__enchantment_id_lvl
         except:
-            temp['ench'] = []
+            temp['Enchantment'] = []
         all_items = []
         for i in range(len(self.__items)):
             all_items.append(self.__items[i]['Name'])
@@ -588,7 +625,7 @@ class GUI():
         self.__IntVar_PLACED_ON.set(temp['hides']['PLACED_ON'])
         self.__IntVar_POTION_EFFECTS.set(temp['hides']['POTION_EFFECTS'])
         self.__IntVar_UNBREAKABLE.set(temp['hides']['UNBREAKABLE'])
-        self.__enchantment_id_lvl = temp['ench']
+        self.__enchantment_id_lvl = temp['Enchantment']
         self.__conv_id_to_name()
         try:
             self.__refresh_enchantment()
@@ -664,7 +701,7 @@ class GUI():
             self.__StringVar_knockbackResistance.set(temp['attributes']['knockbackResistance'])
             self.__StringVar_part.set(temp['part'])
             self.__StringVar_unbreakable.set(temp['unbreakable'])
-            self.__enchantment_name_lvl = temp['ench']
+            self.__enchantment_name_lvl = temp['Enchantment']
             tempData = self.__generate()
             self.__datas.append(tempData)
         self.__Text_showData.delete(1.0, END)
@@ -682,25 +719,19 @@ class GUI():
         for temp in self.__items:
             self.__yamls[temp['Name']] = {}
             currentItem = self.__yamls[temp['Name']]
-            id_data = temp['id'].split(':')
-            if len(id_data) == 1:
-                if id_data[0] == '':
-                    currentItem['Id'] = 0
-                    currentItem['Data'] = 0
-                else:
-                    currentItem['Id'] = int(id_data[0])
-                    currentItem['Data'] = 0
-            else:
-                currentItem['Id'] = int(id_data[0])
-                currentItem['Data'] = int(id_data[1])
+            currentItem['Id'] = temp['id']
+            currentItem['Data'] = 0
             currentItem['Display'] = temp['Name']
             currentItem['Lore'] = temp['lore'].split(';')
             currentItem['Attributes'] = {}
             currentItem['Attributes'][self.__slot_conv[temp['part']]] = {}
             currentItem['Enchantments'] = []
-            ench = temp['ench']
+            ench = temp['Enchantment']
             for i in range(len(ench)):
-                currentItem['Enchantments'].append('{0}:{1}'.format(ench[i]['id'], ench[i]['lvl']))
+                try:
+                    currentItem['Enchantments'].append('{0}:{1}'.format(self.__ench_Conv_mm[ench[i]['id']], ench[i]['lvl']))
+                except:
+                    pass
             selectedHides = temp['hides']
             hides = []
             for i in selectedHides:
@@ -727,12 +758,17 @@ class GUI():
     def __handle_name(self):
         if self.__StringVar_name.get() == '':
             return
-        self.__itemDict['display']['Name'] = self.__StringVar_name.get()
+        temp = str([{'text': self.__StringVar_name.get(), "italic": False}])
+        self.__itemDict['display']['Name'] =  "\'" + temp + "\'"
 
     def __handle_lore(self):
         if self.__StringVar_lore.get() == '':
             return
-        self.__itemDict['display']['Lore'] = self.__StringVar_lore.get().split(';')
+        lores = self.__StringVar_lore.get().split(';')
+        temp = []
+        for i in range(len(lores)):
+            temp.append("\'" + str([{'text': lores[i], 'italic': False}]) + "\'")
+        self.__itemDict['display']['Lore'] = temp
 
     def __handle_unbreakable(self):
         if self.__StringVar_unbreakable.get() == '是':
@@ -764,7 +800,7 @@ class GUI():
         self.__itemDict['AttributeModifiers'].append(temp)
 
     def __generate(self):
-        self.__itemDict = {'display': {'Name': '', 'Lore': []}, 'AttributeModifiers': [], 'ench': []}
+        self.__itemDict = {'display': {'Name': [], 'Lore': []}, 'AttributeModifiers': [], 'Enchantments': []}
         self.__handle_name()
         self.__handle_lore()
         self.__handle_unbreakable()
@@ -775,7 +811,7 @@ class GUI():
         self.__handle_data(self.__StringVar_movementSpeed.get(), 'generic.movementSpeed')
         self.__handle_data(self.__StringVar_armorToughness.get(), 'generic.armorToughness')
         self.__handle_data(self.__StringVar_knockbackResistance.get(), 'generic.knockbackResistance')
-        self.__itemDict['ench'] = self.__enchantment_id_lvl
+        self.__itemDict['Enchantments'] = self.__enchantment_id_lvl
 
         data = str(self.__itemDict)
         exp = "'([0-9a-zA-Z]+)': "
@@ -785,14 +821,13 @@ class GUI():
         data = data.replace("'chest'", 'chest')
         data = data.replace("'legs'", 'legs')
         data = data.replace("'feet'", 'feet')
+        data = data.replace("\\", '')
         data = data.replace("'", "\"")
-        id_data = self.__Entry_id.get().split(':')
-        set_id = int(id_data[0])
-        if len(id_data) == 1:
-            data = '/give @p {0} 1 '.format(set_id) + data
-        else:
-            set_data = int(id_data[1])
-            data = '/give @p {0}:{1} 1 '.format(set_id, set_data) + data
+        data = data.replace("\"\"", "\'")
+        data = data.replace("text", "\"text\"")
+        data = data.replace("italic", "\"italic\"")
+        set_id = self.__Entry_id.get()
+        data = '/give @p {0} 1 '.format(set_id) + data
         self.__Text_showData.delete(1.0, END)
         self.__Text_showData.insert('insert', data)
         return data
