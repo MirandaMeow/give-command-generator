@@ -140,7 +140,7 @@ class GUI():
         self.__itemList.column("序号", width=40)
         self.__itemList.column("物品名称", width=170)
         self.__itemList.heading("序号", text="序号")
-        self.__itemList.heading("物品名称", text="物品名称 ")
+        self.__itemList.heading("物品名称", text="物品名称")
         self.__itemList.place(x=350, y=20)
 
         self.__Label_name = Label(self.__init_window, text='名称：')
