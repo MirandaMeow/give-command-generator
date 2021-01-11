@@ -106,7 +106,7 @@ class GUI():
         self.__init_window = Tk()
         self.__open_flag = False
         self.__egg = 0
-        self.__title = '指令生成转换器 - Ver 1.8.5'
+        self.__title = '指令生成转换器 - Ver 2.0.0'
         self.__itemDict = {'display': {'Name': [], 'Lore': []}, 'AttributeModifiers': [], 'Enchantments': []}
         self.__set_init_window()
         self.__init_window.mainloop()
@@ -277,8 +277,8 @@ class GUI():
         self.__CheckButton_UNBREAKABLE = Checkbutton(self.__init_window, text='UNBREAKABLE', variable=self.__IntVar_UNBREAKABLE)
         self.__CheckButton_UNBREAKABLE.place(x=150, y=290)
 
-        self.__Label_statusText = Label(self.__init_window, text='{0} 程序初始化完成'.format(self.__getTime()))
-        self.__Label_statusText.place(x=20, y=470)
+        self.__Label_statusText = Label(self.__init_window, text='{0} 程序初始化完成'.format(self.__getTime()), bd=1, relief=SUNKEN, anchor=W)
+        self.__Label_statusText.pack(side=BOTTOM, fill=X)
 
     def __init_enchantment(self):
         if self.__open_flag == True:
@@ -345,9 +345,7 @@ class GUI():
             self.__init_window.title("指令生成转换器 - OAO")
         else:
             self.__init_window.title(self.__title)
-        about_text = '''
-        开发者：MirandaMeow
-        '''
+        about_text = "开发者：MirandaMeow"
         messagebox.showinfo("关于", about_text)
 
     def __close_window(self):
@@ -418,7 +416,7 @@ class GUI():
 
     def __open_file(self):
         file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser('.')), filetypes=[('数据文件', '*.json'), ('所有文件', '*')])
-        if file_path is not '':
+        if file_path != '':
             with open(file=file_path, mode='r', encoding='utf-8') as file:
                 try:
                     fileJson = json.load(file)
@@ -442,8 +440,8 @@ class GUI():
                 self.__refreshList()
 
     def __open_file_excel(self):
-        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser('.')), filetypes=[('Excel 工作簿', '*.xlsx'), ('Excel 97-2003 工工作簿', '*.xls'), ('所有文件', '*')])
-        if file_path is not '':
+        file_path = filedialog.askopenfilename(title=u'选择文件', initialdir=(os.path.expanduser('.')), filetypes=[('Excel 工作簿', '*.xlsx'), ('Excel 97-2003 工作簿', '*.xls'), ('所有文件', '*')])
+        if file_path != '':
             try:
                 table = xlrd.open_workbook(file_path)
                 sheet = table.sheets()[0]
@@ -515,7 +513,7 @@ class GUI():
 
     def __save_file(self):
         file_path = filedialog.asksaveasfilename(title=u'保存文件', filetypes=[('数据文件', '*.json')], defaultextension=".json")
-        if file_path is not '':
+        if file_path != '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 json.dump(self.__items, file, ensure_ascii=False)
             self.__Label_statusText['text'] = '{0} 保存成功'.format(self.__getTime())
@@ -523,7 +521,7 @@ class GUI():
     def __save_file_yaml(self):
         self.__output_all_yaml()
         file_path = filedialog.asksaveasfilename(title=u'保存文件', filetypes=[('YAML 数据文件', '*.yml')], defaultextension=".yml")
-        if file_path is not '':
+        if file_path != '':
             with open(file=file_path, mode='w', encoding='utf-8') as file:
                 yaml.safe_dump(self.__yamls, file, default_flow_style=False, encoding='utf-8', allow_unicode=True)
             self.__Label_statusText['text'] = '{0} 导出成功'.format(self.__getTime())
